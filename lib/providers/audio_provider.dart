@@ -1,5 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
+import 'dart:math';
+
+// Equalizer preset definitions
+class EQPreset {
+  final String name;
+  final List<double> bands;
+  final String description;
+
+  EQPreset({
+    required this.name,
+    required this.bands,
+    required this.description,
+  });
+}
 
 class AudioProvider extends ChangeNotifier {
   late AudioPlayer _audioPlayer1;
@@ -8,6 +22,58 @@ class AudioProvider extends ChangeNotifier {
   // Equalizer bands (10-band)
   final List<double> _eqBands = List.filled(10, 0.0);
   
+  // Current preset
+  String _currentPreset = 'Flat';
+  
+  // Equalizer presets for different genres
+  static final Map<String, EQPreset> eqPresets = {
+    'Flat': EQPreset(
+      name: 'Flat',
+      bands: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      description: 'Neutral flat response',
+    ),
+    'Tango': EQPreset(
+      name: 'Tango',
+      bands: [-2.0, -1.0, 1.0, 2.0, 3.0, 2.0, 1.0, -1.0, -2.0, -3.0],
+      description: 'Enhanced midrange for tango vocals and strings',
+    ),
+    'Jazz': EQPreset(
+      name: 'Jazz',
+      bands: [1.0, 2.0, 1.0, 0.0, -1.0, 1.0, 2.0, 3.0, 2.0, 1.0],
+      description: 'Warm bass and bright highs for jazz',
+    ),
+    'Folk Argentino': EQPreset(
+      name: 'Folk Argentino',
+      bands: [2.0, 1.0, 0.0, 1.0, 2.0, 1.0, 0.0, -1.0, -2.0, -1.0],
+      description: 'Warm and earthy for Argentine folk',
+    ),
+    'Folk Russian': EQPreset(
+      name: 'Folk Russian',
+      bands: [1.0, 0.0, -1.0, 0.0, 1.0, 2.0, 3.0, 2.0, 1.0, 0.0],
+      description: 'Bright and crisp for Russian folk',
+    ),
+    'Cross-step Waltz': EQPreset(
+      name: 'Cross-step Waltz',
+      bands: [0.0, 1.0, 2.0, 1.0, 0.0, -1.0, 0.0, 1.0, 2.0, 1.0],
+      description: 'Balanced with emphasis on rhythm',
+    ),
+    'Bass Boost': EQPreset(
+      name: 'Bass Boost',
+      bands: [6.0, 5.0, 3.0, 0.0, -2.0, -3.0, -2.0, 0.0, 1.0, 2.0],
+      description: 'Enhanced low frequencies',
+    ),
+    'Treble Boost': EQPreset(
+      name: 'Treble Boost',
+      bands: [-3.0, -2.0, -1.0, 0.0, 1.0, 3.0, 5.0, 6.0, 5.0, 4.0],
+      description: 'Enhanced high frequencies',
+    ),
+    'Vocal': EQPreset(
+      name: 'Vocal',
+      bands: [-2.0, -1.0, 0.0, 2.0, 3.0, 2.0, 1.0, -1.0, -2.0, -3.0],
+      description: 'Optimized for vocal clarity',
+    ),
+  };
+
   // Crossfader position (0 = deck1, 1 = deck2)
   double _crossfaderPosition = 0.5;
   
@@ -187,7 +253,89 @@ class AudioProvider extends ChangeNotifier {
     for (int i = 0; i < _eqBands.length; i++) {
       _eqBands[i] = 0.0;
     }
+    _currentPreset = 'Flat';
     notifyListeners();
+  }
+
+  // Preset management
+  String get currentPreset => _currentPreset;
+  
+  List<String> getAvailablePresets() {
+    return eqPresets.keys.toList();
+  }
+
+  void applyPreset(String presetName) {
+    if (eqPresets.containsKey(presetName)) {
+      final preset = eqPresets[presetName]!;
+      for (int i = 0; i < preset.bands.length && i < _eqBands.length; i++) {
+        _eqBands[i] = preset.bands[i];
+      }
+      _currentPreset = presetName;
+      notifyListeners();
+    }
+  }
+
+  EQPreset? getPreset(String presetName) {
+    return eqPresets[presetName];
+  }
+
+  // Frequency response calculation for visualization
+  List<double> calculateFrequencyResponse(List<int> frequencies) {
+    // Simplified frequency response calculation
+    // Maps EQ band adjustments to frequency response curve
+    List<double> response = [];
+    
+    for (int freq in frequencies) {
+      double magnitude = 0.0;
+      
+      // Calculate contribution from each EQ band
+      for (int i = 0; i < _eqBands.length; i++) {
+        double bandFreq = _getBandFrequency(i);
+        double bandwidth = _getBandwidth(i);
+        
+        // Gaussian-like response centered at band frequency
+        double distance = (freq - bandFreq).abs();
+        double contribution = _eqBands[i] * exp(-(distance * distance) / (2 * bandwidth * bandwidth));
+        magnitude += contribution;
+      }
+      
+      response.add(magnitude);
+    }
+    
+    return response;
+  }
+
+  double _getBandFrequency(int bandIndex) {
+    // 10-band EQ frequencies (Hz)
+    const frequencies = [60, 150, 400, 1000, 2400, 6000, 15000, 20000, 30000, 40000];
+    return frequencies[bandIndex].toDouble();
+  }
+
+  double _getBandwidth(int bandIndex) {
+    // Bandwidth increases for higher frequencies
+    return 100.0 + (bandIndex * 50.0);
+  }
+
+  // Phase response calculation (simplified)
+  List<double> calculatePhaseResponse(List<int> frequencies) {
+    List<double> phases = [];
+    
+    for (int freq in frequencies) {
+      double phase = 0.0;
+      
+      for (int i = 0; i < _eqBands.length; i++) {
+        if (_eqBands[i] != 0.0) {
+          double bandFreq = _getBandFrequency(i);
+          // Simplified phase calculation
+          double phaseDiff = (freq - bandFreq) / bandFreq;
+          phase += _eqBands[i] * atan(phaseDiff) * 180 / 3.14159;
+        }
+      }
+      
+      phases.add(phase);
+    }
+    
+    return phases;
   }
 
   @override
