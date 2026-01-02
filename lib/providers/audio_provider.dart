@@ -2,6 +2,21 @@ import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
 
+// Track model
+class Track {
+  final String id;
+  final String name;
+  final String path;
+  final Duration? duration;
+
+  Track({
+    required this.id,
+    required this.name,
+    required this.path,
+    this.duration,
+  });
+}
+
 // Equalizer preset definitions
 class EQPreset {
   final String name;
@@ -19,6 +34,13 @@ class AudioProvider extends ChangeNotifier {
   late AudioPlayer _audioPlayer1;
   late AudioPlayer _audioPlayer2;
   
+  // Track queues (max 4 tracks per deck)
+  final List<Track> _queue1 = [];
+  final List<Track> _queue2 = [];
+  int _currentTrackIndex1 = -1;
+  int _currentTrackIndex2 = -1;
+  static const int maxQueueSize = 4;
+
   // Equalizer bands (10-band)
   final List<double> _eqBands = List.filled(10, 0.0);
   
@@ -149,6 +171,12 @@ class AudioProvider extends ChangeNotifier {
   AudioPlayer get audioPlayer1 => _audioPlayer1;
   AudioPlayer get audioPlayer2 => _audioPlayer2;
 
+  // Queue getters
+  List<Track> get queue1 => _queue1;
+  List<Track> get queue2 => _queue2;
+  int get currentTrackIndex1 => _currentTrackIndex1;
+  int get currentTrackIndex2 => _currentTrackIndex2;
+
   // Setters
   void setEqBand(int index, double value) {
     if (index >= 0 && index < _eqBands.length) {
@@ -231,6 +259,103 @@ class AudioProvider extends ChangeNotifier {
 
   Future<void> seek2(Duration position) async {
     await _audioPlayer2.seek(position);
+  }
+
+  // Queue management
+  bool addTrackToQueue1(Track track) {
+    if (_queue1.length < maxQueueSize) {
+      _queue1.add(track);
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  bool addTrackToQueue2(Track track) {
+    if (_queue2.length < maxQueueSize) {
+      _queue2.add(track);
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  void removeTrackFromQueue1(int index) {
+    if (index >= 0 && index < _queue1.length) {
+      _queue1.removeAt(index);
+      if (_currentTrackIndex1 == index) {
+        _currentTrackIndex1 = -1;
+      } else if (_currentTrackIndex1 > index) {
+        _currentTrackIndex1--;
+      }
+      notifyListeners();
+    }
+  }
+
+  void removeTrackFromQueue2(int index) {
+    if (index >= 0 && index < _queue2.length) {
+      _queue2.removeAt(index);
+      if (_currentTrackIndex2 == index) {
+        _currentTrackIndex2 = -1;
+      } else if (_currentTrackIndex2 > index) {
+        _currentTrackIndex2--;
+      }
+      notifyListeners();
+    }
+  }
+
+  void clearQueue1() {
+    _queue1.clear();
+    _currentTrackIndex1 = -1;
+    notifyListeners();
+  }
+
+  void clearQueue2() {
+    _queue2.clear();
+    _currentTrackIndex2 = -1;
+    notifyListeners();
+  }
+
+  Future<void> playTrackFromQueue1(int index) async {
+    if (index >= 0 && index < _queue1.length) {
+      _currentTrackIndex1 = index;
+      await loadTrack1(_queue1[index].path);
+      await playPause1();
+      notifyListeners();
+    }
+  }
+
+  Future<void> playTrackFromQueue2(int index) async {
+    if (index >= 0 && index < _queue2.length) {
+      _currentTrackIndex2 = index;
+      await loadTrack2(_queue2[index].path);
+      await playPause2();
+      notifyListeners();
+    }
+  }
+
+  Future<void> nextTrack1() async {
+    if (_currentTrackIndex1 < _queue1.length - 1) {
+      await playTrackFromQueue1(_currentTrackIndex1 + 1);
+    }
+  }
+
+  Future<void> nextTrack2() async {
+    if (_currentTrackIndex2 < _queue2.length - 1) {
+      await playTrackFromQueue2(_currentTrackIndex2 + 1);
+    }
+  }
+
+  Future<void> previousTrack1() async {
+    if (_currentTrackIndex1 > 0) {
+      await playTrackFromQueue1(_currentTrackIndex1 - 1);
+    }
+  }
+
+  Future<void> previousTrack2() async {
+    if (_currentTrackIndex2 > 0) {
+      await playTrackFromQueue2(_currentTrackIndex2 - 1);
+    }
   }
 
   Future<void> loadTrack1(String path) async {

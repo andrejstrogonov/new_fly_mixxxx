@@ -16,7 +16,7 @@ class PresetsWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFF2a2a2a),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.3)),
+            border: Border.all(color: Colors.deepPurple.withOpacity(0.3)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +85,7 @@ class PresetsWidget extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: isActive
               ? Colors.deepPurple
-              : Colors.deepPurple.withValues(alpha: 0.3),
+              : Colors.deepPurple.withOpacity(0.3),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),

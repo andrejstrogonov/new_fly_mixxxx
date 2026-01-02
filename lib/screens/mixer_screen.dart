@@ -6,6 +6,7 @@ import '../widgets/mixer_controls_widget.dart';
 import '../widgets/equalizer_widget.dart';
 import '../widgets/presets_widget.dart';
 import '../widgets/frequency_response_widget.dart';
+import '../widgets/track_loader_widget.dart';
 
 class MixerScreen extends StatefulWidget {
   const MixerScreen({super.key});
@@ -30,7 +31,7 @@ class _MixerScreenState extends State<MixerScreen> {
       appBar: AppBar(
         title: const Text('Fly Mixxx - DJ Mixer'),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple.withValues(alpha: 0.8),
+        backgroundColor: Colors.deepPurple.withOpacity(0.8),
         elevation: 0,
       ),
       body: Consumer<AudioProvider>(
@@ -40,6 +41,9 @@ class _MixerScreenState extends State<MixerScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
+                  // Track Loader Section
+                  const TrackLoaderWidget(),
+                  const SizedBox(height: 24),
                   // Decks Section
                   Row(
                     children: [
@@ -87,7 +91,7 @@ class _MixerScreenState extends State<MixerScreen> {
                     decoration: BoxDecoration(
                       color: const Color(0xFF2a2a2a),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.3)),
+                      border: Border.all(color: Colors.deepPurple.withOpacity(0.3)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

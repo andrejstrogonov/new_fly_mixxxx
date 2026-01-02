@@ -21,7 +21,7 @@ class FrequencyResponseWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFF2a2a2a),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.3)),
+            border: Border.all(color: Colors.deepPurple.withOpacity(0.3)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +56,8 @@ class FrequencyResponseWidget extends StatelessWidget {
 
     for (int i = 0; i < points; i++) {
       double logFreq = logMin + (logMax - logMin) * (i / (points - 1));
-      double freq = pow(10.0, log(logFreq) / log(10.0)).toDouble();
+      double exponent = log(logFreq) / log(10.0);
+      double freq = pow(10.0, exponent).toDouble();
       frequencies.add(freq.toInt());
     }
 
@@ -101,13 +102,13 @@ class FrequencyResponseWidget extends StatelessWidget {
                   verticalInterval: 10,
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
-                      color: Colors.grey.withValues(alpha: 0.2),
+                      color: Colors.grey.withOpacity(0.2),
                       strokeWidth: 1,
                     );
                   },
                   getDrawingVerticalLine: (value) {
                     return FlLine(
-                      color: Colors.grey.withValues(alpha: 0.2),
+                      color: Colors.grey.withOpacity(0.2),
                       strokeWidth: 1,
                     );
                   },
@@ -126,7 +127,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                       reservedSize: 30,
                       getTitlesWidget: (value, meta) {
                         const labels = ['20Hz', '100Hz', '1kHz', '10kHz', '20kHz'];
-                        int index = (value / 10).toInt();
+                        int index = value ~/ 10;
                         if (index >= 0 && index < labels.length) {
                           return Text(
                             labels[index],
@@ -159,7 +160,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                 borderData: FlBorderData(
                   show: true,
                   border: Border.all(
-                    color: Colors.deepPurple.withValues(alpha: 0.3),
+                    color: Colors.deepPurple.withOpacity(0.3),
                   ),
                 ),
                 minX: 0,
@@ -176,7 +177,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: Colors.deepPurple.withValues(alpha: 0.2),
+                      color: Colors.deepPurple.withOpacity(0.2),
                     ),
                   ),
                 ],
@@ -226,13 +227,13 @@ class FrequencyResponseWidget extends StatelessWidget {
                   verticalInterval: 10,
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
-                      color: Colors.grey.withValues(alpha: 0.2),
+                      color: Colors.grey.withOpacity(0.2),
                       strokeWidth: 1,
                     );
                   },
                   getDrawingVerticalLine: (value) {
                     return FlLine(
-                      color: Colors.grey.withValues(alpha: 0.2),
+                      color: Colors.grey.withOpacity(0.2),
                       strokeWidth: 1,
                     );
                   },
@@ -251,7 +252,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                       reservedSize: 30,
                       getTitlesWidget: (value, meta) {
                         const labels = ['20Hz', '100Hz', '1kHz', '10kHz', '20kHz'];
-                        int index = (value / 10).toInt();
+                        int index = value ~/ 10;
                         if (index >= 0 && index < labels.length) {
                           return Text(
                             labels[index],
@@ -284,7 +285,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                 borderData: FlBorderData(
                   show: true,
                   border: Border.all(
-                    color: Colors.cyan.withValues(alpha: 0.3),
+                    color: Colors.cyan.withOpacity(0.3),
                   ),
                 ),
                 minX: 0,
@@ -301,7 +302,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: Colors.cyan.withValues(alpha: 0.2),
+                      color: Colors.cyan.withOpacity(0.2),
                     ),
                   ),
                 ],

@@ -41,7 +41,7 @@ class DeckWidget extends StatelessWidget {
             color: const Color(0xFF2a2a2a),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isPlaying ? Colors.deepPurple : Colors.grey.withValues(alpha: 0.3),
+              color: isPlaying ? Colors.deepPurple : Colors.grey.withOpacity(0.3),
               width: isPlaying ? 2 : 1,
             ),
           ),
@@ -107,7 +107,7 @@ class DeckWidget extends StatelessWidget {
                       ? position.inMilliseconds / duration.inMilliseconds
                       : 0,
                   minHeight: 4,
-                  backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                  backgroundColor: Colors.grey.withOpacity(0.2),
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.deepPurple),
                 ),
               ),
@@ -130,7 +130,7 @@ class DeckWidget extends StatelessWidget {
                     icon: const Icon(Icons.stop),
                     label: const Text('Stop'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red.withValues(alpha: 0.7),
+                      backgroundColor: Colors.red.withOpacity(0.7),
                       foregroundColor: Colors.white,
                     ),
                   ),
@@ -175,7 +175,7 @@ class DeckWidget extends StatelessWidget {
                       }
                     },
                     activeColor: Colors.deepPurple,
-                    inactiveColor: Colors.grey.withValues(alpha: 0.3),
+                    inactiveColor: Colors.grey.withOpacity(0.3),
                   ),
                 ],
               ),
