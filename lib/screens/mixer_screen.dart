@@ -7,6 +7,8 @@ import '../widgets/equalizer_widget.dart';
 import '../widgets/presets_widget.dart';
 import '../widgets/frequency_response_widget.dart';
 import '../widgets/track_loader_widget.dart';
+import '../widgets/audio_device_analysis_widget.dart';
+import '../widgets/composition_generator_widget.dart';
 
 class MixerScreen extends StatefulWidget {
   const MixerScreen({super.key});
@@ -84,6 +86,12 @@ class _MixerScreenState extends State<MixerScreen> {
                   const SizedBox(height: 24),
                   // Frequency Response
                   const FrequencyResponseWidget(),
+                  const SizedBox(height: 24),
+                  // Audio Device Analysis
+                  const AudioDeviceAnalysisWidget(),
+                  const SizedBox(height: 24),
+                  // Composition Generator
+                  const CompositionGeneratorWidget(),
                   const SizedBox(height: 24),
                   // Info Section
                   Container(
