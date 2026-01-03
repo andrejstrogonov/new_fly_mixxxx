@@ -27,6 +27,7 @@ class FrequencyResponseWidget extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
                   'Frequency Response (АЧХ & ФЧХ & Диаграмма Боде)',
@@ -48,7 +49,8 @@ class FrequencyResponseWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Expanded(
+                SizedBox(
+                  height: 400,
                   child: TabBarView(
                     children: [
                       // АЧХ
@@ -77,7 +79,7 @@ class FrequencyResponseWidget extends StatelessWidget {
 
     for (int i = 0; i < points; i++) {
       double logFreq = logMin + (logMax - logMin) * (i / (points - 1));
-      double freq = pow(10.0, logFreq) as double;
+      double freq = pow(10.0, logFreq).toDouble();
       frequencies.add(freq.toInt());
     }
 
