@@ -1,54 +1,210 @@
-# Fly Mixxx - Professional DJ Mixer
+# Fly Mixxx - DJ Mixer Application
 
-A cross-platform DJ mixer application for Windows and Android, designed for mixing tango instrumentals and other music genres.
+> **⭐ Начните здесь:** [START_HERE.md](START_HERE.md) ← Прочитайте это первым!
 
-## Features
+Профессиональное DJ-микшерное приложение с поддержкой эквалайзера, анализа частотной характеристики и AI-генерации композиций.
 
-- **Dual Deck System**: Mix between two audio tracks simultaneously
-- **10-Band Equalizer**: Fine-tune audio frequencies (60Hz to 40kHz)
-- **Crossfader**: Smooth transitions between decks
-- **BPM Control**: Adjust tempo from 60 to 240 BPM
-- **Tempo/Speed Control**: Adjust playback speed from 0.5x to 2.0x
-- **Master Volume Control**: Control overall output level
-- **Individual Deck Volume**: Separate volume controls for each deck
-- **Progress Tracking**: Real-time position and duration display
-- **Dark Theme UI**: Professional DJ-style interface
+## ⚡ Быстрый старт
 
-## Requirements
+### Для пользователей
+Начните здесь: [docs/user/QUICK_START.md](docs/user/QUICK_START.md)
+- [Как установить приложение](docs/user/QUICK_START.md)
+- [Основные возможности](docs/user/USAGE.md)
+- [Решение проблем](docs/user/TROUBLESHOOTING.md)
 
-- Flutter SDK 3.10.4 or higher
-- Dart SDK 3.10.4 or higher
-- Android SDK (for Android builds)
-- Windows SDK (for Windows builds)
+### Для разработчиков
+Начните с подготовки окружения: [docs/developer/SETUP.md](docs/developer/SETUP.md)
 
-## Installation
+Также посмотрите:
+- [Правила вклада](docs/developer/CONTRIBUTING.md) — как помочь проекту
+- [Архитектура кода](docs/developer/ARCHITECTURE.md) — структура проекта
+- [Решение проблем разработки](docs/developer/TROUBLESHOOTING.md) — типичные ошибки
+- [Deployment guide](docs/developer/DEPLOYMENT.md) — как собрать и выпустить приложение
 
-### 1. Install Dependencies
+## 🎯 Основные возможности
 
+- **🎚️ Микшер**: Работа с несколькими аудио дорожками одновременно
+- **🎛️ 10-полосный EQ**: С предустановками для разных жанров (Bass Boost, Treble, и др.)
+- **📊 Частотная характеристика**: АЧХ, ФЧХ, диаграмма Боде
+- **🔍 Анализ оборудования**: Определение параметров аудиоустройств
+- **🤖 AI Композиции**: Генерирование мелодий через нейросеть API
+- **💾 Экспорт**: Сохранение миксов в WAV формате
+- **⚙️ Эффекты**: Встроенные аудиоэффекты в реальном времени
+
+## 🛠️ Установка и запуск
+
+### Общие требования
+- Flutter SDK >= 3.0.0
+- Dart >= 3.0.0
+- Для Windows: Visual C++ Redistributable
+- Для Android: Android 5.0+ (API 21+)
+
+### Быстрая подготовка (разработка)
 ```bash
+# Получить зависимости
 flutter pub get
+
+# Запустить приложение
+flutter run -d windows          # Windows
+flutter run -d android          # Android
 ```
 
-### 2. Build for Windows
+Для полной информации см. [RUN_APP.md](RUN_APP.md)
 
-```bash
-flutter build windows
+## 📁 Структура проекта
+
+```
+lib/
+├── main.dart                     # Точка входа
+├── screens/
+│   └── mixer_screen.dart         # Главный экран
+├── widgets/                      # Переиспользуемые компоненты UI
+│   ├── frequency_response_widget.dart
+│   ├── equalizer_widget.dart
+│   ├── mixer_controls_widget.dart
+│   ├── deck_widget.dart
+│   └── ...
+├── providers/                    # State Management (Provider)
+│   ├── audio_provider.dart
+│   ├── audio_device_analyzer.dart
+│   └── composition_generator.dart
+└── models/                       # Модели данных
+
+docs/
+├── developer/                    # Для разработчиков
+│   ├── SETUP.md
+│   ├── CONTRIBUTING.md
+│   ├── ARCHITECTURE.md
+│   ├── TROUBLESHOOTING.md
+│   └── DEPLOYMENT.md
+└── user/                         # Для пользователей
+    ├── QUICK_START.md
+    ├── USAGE.md
+    └── TROUBLESHOOTING.md
 ```
 
-To run on Windows:
+## 🚀 Запуск для разработки
+
+### VS Code
+1. Откройте папку проекта
+2. F5 (Debug) или Ctrl+Shift+D и выберите конфигурацию
+3. Доступные конфигурации в `.vscode/launch.json`:
+   - Flutter (Debug - Windows)
+   - Flutter (Debug - Android)
+   - Flutter (Release - Windows)
+   - и др.
+
+### Android Studio
+1. Откройте проект
+2. Выберите целевое устройство
+3. Нажмите Shift+F10 (Run) или Ctrl+F5 (Debug)
+
+### Командная строка
 ```bash
-flutter run -d windows
+flutter run                      # Все устройства
+flutter run -d windows          # Windows
+flutter run --release           # Release сборка
 ```
 
-### 3. Build for Android
+## 📦 Зависимости
 
+Основные пакеты:
+- **provider** — управление состоянием (State Management)
+- **just_audio** — воспроизведение аудио
+- **fl_chart** — графики и диаграммы
+- **file_picker** — выбор файлов
+- **http/dio** — сетевые запросы для API
+- **win32** — нативные вызовы Windows
+
+## 🔨 Сборка для production
+
+### Windows EXE
 ```bash
-flutter build apk
+flutter build windows --release
+# Выход: build/windows/x64/Release/new_fly_mixxxx.exe
 ```
 
-To run on Android device/emulator:
+### Android APK/AAB
 ```bash
-flutter run -d android
+flutter build apk --release       # APK для прямой установки
+flutter build aab --release       # App Bundle для Google Play
+```
+
+Полная инструкция: [docs/developer/DEPLOYMENT.md](docs/developer/DEPLOYMENT.md)
+
+## 🐛 Решение проблем
+
+### Быстрые команды
+```bash
+flutter clean                    # Очистить кэш
+flutter pub get                  # Получить зависимости
+flutter analyze                  # Проверить код
+flutter doctor -v                # Диагностика окружения
+```
+
+Подробнее:
+- [Решение проблем для пользователей](docs/user/TROUBLESHOOTING.md)
+- [Решение проблем для разработчиков](docs/developer/TROUBLESHOOTING.md)
+
+## 📚 Документация
+
+**Для пользователей:**
+- [Быстрый старт](docs/user/QUICK_START.md)
+- [Как использовать приложение](docs/user/USAGE.md)
+- [Решение проблем](docs/user/TROUBLESHOOTING.md)
+
+**Для разработчиков:**
+- [Настройка окружения](docs/developer/SETUP.md)
+- [Архитектура приложения](docs/developer/ARCHITECTURE.md)
+- [Правила вклада](docs/developer/CONTRIBUTING.md)
+- [Решение проблем разработки](docs/developer/TROUBLESHOOTING.md)
+- [Сборка и развёртывание](docs/developer/DEPLOYMENT.md)
+
+**Общие гайды:**
+- [Как запустить приложение](RUN_APP.md)
+
+## 🤝 Вклад в проект
+
+Хотите помочь? Посмотрите [CONTRIBUTING.md](docs/developer/CONTRIBUTING.md)
+
+Краткие правила:
+1. Fork репозитория
+2. Создайте feature ветку: `git checkout -b feature/awesome-feature`
+3. Commit изменений: `git commit -m 'Add awesome feature'`
+4. Push в ветку: `git push origin feature/awesome-feature`
+5. Откройте Pull Request
+
+## 📄 Лицензия
+
+MIT License — см. [LICENSE](LICENSE) файл
+
+## 📞 Контакт и поддержка
+
+Если у вас возникли вопросы:
+- Создайте Issue в репозитории
+- Посмотрите раздел "Решение проблем" в документации
+- Свяжитесь через GitHub Discussions
+
+## 📝 Версионирование
+
+Текущая версия: **1.0.0**
+
+Следуем [Semantic Versioning](https://semver.org/):
+- MAJOR (1.0.0) — несовместимые изменения
+- MINOR (0.1.0) — новые функции
+- PATCH (0.0.1) — исправления ошибок
+
+## 🎓 Полезные ресурсы
+
+- [Flutter документация](https://flutter.dev/docs)
+- [Dart документация](https://dart.dev/guides)
+- [Provider package](https://pub.dev/packages/provider)
+- [Just Audio package](https://pub.dev/packages/just_audio)
+- [FL Chart package](https://pub.dev/packages/fl_chart)
+
+---
+
+Спасибо что вы используете Fly Mixxx! 🎵
 ```
 
 ## Usage

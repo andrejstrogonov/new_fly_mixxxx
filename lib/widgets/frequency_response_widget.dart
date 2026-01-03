@@ -23,7 +23,7 @@ class FrequencyResponseWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xFF2a2a2a),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.deepPurple.withOpacity(0.3)),
+              border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.3)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,13 +124,13 @@ class FrequencyResponseWidget extends StatelessWidget {
                   verticalInterval: 10,
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withValues(alpha: 0.2),
                       strokeWidth: 1,
                     );
                   },
                   getDrawingVerticalLine: (value) {
                     return FlLine(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withValues(alpha: 0.2),
                       strokeWidth: 1,
                     );
                   },
@@ -182,7 +182,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                 borderData: FlBorderData(
                   show: true,
                   border: Border.all(
-                    color: Colors.deepPurple.withOpacity(0.3),
+                    color: Colors.deepPurple.withValues(alpha: 0.3),
                   ),
                 ),
                 minX: 0,
@@ -199,7 +199,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: Colors.deepPurple.withOpacity(0.2),
+                      color: Colors.deepPurple.withValues(alpha: 0.2),
                     ),
                   ),
                 ],
@@ -249,13 +249,13 @@ class FrequencyResponseWidget extends StatelessWidget {
                   verticalInterval: 10,
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withValues(alpha: 0.2),
                       strokeWidth: 1,
                     );
                   },
                   getDrawingVerticalLine: (value) {
                     return FlLine(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withValues(alpha: 0.2),
                       strokeWidth: 1,
                     );
                   },
@@ -307,7 +307,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                 borderData: FlBorderData(
                   show: true,
                   border: Border.all(
-                    color: Colors.cyan.withOpacity(0.3),
+                    color: Colors.cyan.withValues(alpha: 0.3),
                   ),
                 ),
                 minX: 0,
@@ -324,7 +324,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: Colors.cyan.withOpacity(0.2),
+                      color: Colors.cyan.withValues(alpha: 0.2),
                     ),
                   ),
                 ],
@@ -356,33 +356,33 @@ class FrequencyResponseWidget extends StatelessWidget {
         color: const Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(8),
       ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Диаграмма Боде (ЛФЧХ) - Логарифмическая частотная характеристика',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.amber,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 400,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Диаграмма Боде (ЛФЧХ) - Логарифмическая частотная характеристика',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  height: 400,
-                  child: Column(
-                    children: [
-                      // Амплитудная характеристика Боде
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.deepPurple.withOpacity(0.3),
-                            ),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
+                // Амплитудная характеристика Боде
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.deepPurple.withValues(alpha: 0.3),
+                      ),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
                     child: LineChart(
                       LineChartData(
                         gridData: FlGridData(
@@ -392,19 +392,19 @@ class FrequencyResponseWidget extends StatelessWidget {
                           verticalInterval: 0.5,
                           getDrawingHorizontalLine: (value) {
                             return FlLine(
-                              color: Colors.grey.withOpacity(0.2),
+                              color: Colors.grey.withValues(alpha: 0.2),
                               strokeWidth: 1,
                             );
                           },
                           getDrawingVerticalLine: (value) {
                             if (value == 1.3 || value == 2.0 || value == 3.0 || value == 4.3) {
                               return FlLine(
-                                color: Colors.grey.withOpacity(0.3),
+                                color: Colors.grey.withValues(alpha: 0.3),
                                 strokeWidth: 1,
                               );
                             }
                             return FlLine(
-                              color: Colors.grey.withOpacity(0.15),
+                              color: Colors.grey.withValues(alpha: 0.15),
                               strokeWidth: 0.5,
                             );
                           },
@@ -465,7 +465,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                         borderData: FlBorderData(
                           show: true,
                           border: Border.all(
-                            color: Colors.deepPurple.withOpacity(0.3),
+                            color: Colors.deepPurple.withValues(alpha: 0.3),
                           ),
                         ),
                         minX: 1.0,
@@ -482,7 +482,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                             dotData: const FlDotData(show: false),
                             belowBarData: BarAreaData(
                               show: true,
-                              color: Colors.deepPurple.withOpacity(0.2),
+                              color: Colors.deepPurple.withValues(alpha: 0.2),
                             ),
                           ),
                         ],
@@ -495,7 +495,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.cyan.withOpacity(0.3),
+                        color: Colors.cyan.withValues(alpha: 0.3),
                       ),
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -508,19 +508,19 @@ class FrequencyResponseWidget extends StatelessWidget {
                           verticalInterval: 0.5,
                           getDrawingHorizontalLine: (value) {
                             return FlLine(
-                              color: Colors.grey.withOpacity(0.2),
+                              color: Colors.grey.withValues(alpha: 0.2),
                               strokeWidth: 1,
                             );
                           },
                           getDrawingVerticalLine: (value) {
                             if (value == 1.3 || value == 2.0 || value == 3.0 || value == 4.3) {
                               return FlLine(
-                                color: Colors.grey.withOpacity(0.3),
+                                color: Colors.grey.withValues(alpha: 0.3),
                                 strokeWidth: 1,
                               );
                             }
                             return FlLine(
-                              color: Colors.grey.withOpacity(0.15),
+                              color: Colors.grey.withValues(alpha: 0.15),
                               strokeWidth: 0.5,
                             );
                           },
@@ -581,7 +581,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                         borderData: FlBorderData(
                           show: true,
                           border: Border.all(
-                            color: Colors.cyan.withOpacity(0.3),
+                            color: Colors.cyan.withValues(alpha: 0.3),
                           ),
                         ),
                         minX: 1.0,
@@ -598,7 +598,7 @@ class FrequencyResponseWidget extends StatelessWidget {
                             dotData: const FlDotData(show: false),
                             belowBarData: BarAreaData(
                               show: true,
-                              color: Colors.cyan.withOpacity(0.2),
+                              color: Colors.cyan.withValues(alpha: 0.2),
                             ),
                           ),
                         ],
@@ -606,12 +606,12 @@ class FrequencyResponseWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                    ],
-                  ),
-                ),
               ],
             ),
-          );
-        }
-      }
+          ),
+        ],
+      ),
+    );
+  }
+}
 

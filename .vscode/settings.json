@@ -1,0 +1,15 @@
+{
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "Dart-Code.dart-code"
+  },
+  "dart.flutterRunMode": "debug",
+  "dart.flutterSdkPath": "C:\\flutter",
+  "editor.rulers": [80, 120],
+  "files.exclude": {
+    "**/.*": true,
+    "**/*.lock": false,
+    "build/": true
+  }
+}
+

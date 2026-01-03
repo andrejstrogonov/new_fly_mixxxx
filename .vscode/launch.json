@@ -1,0 +1,59 @@
+{
+}
+  ]
+    }
+      "console": "integratedTerminal"
+      "program": "lib/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "name": "Flutter (Debug - All Devices)",
+    {
+    },
+      ]
+        "--release"
+        "android",
+        "-d",
+      "args": [
+      "console": "integratedTerminal",
+      "program": "lib/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "name": "Flutter (Release - Android)",
+    {
+    },
+      ]
+        "android"
+        "-d",
+      "args": [
+      "console": "integratedTerminal",
+      "program": "lib/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "name": "Flutter (Debug - Android)",
+    {
+    },
+      ]
+        "--release"
+        "windows",
+        "-d",
+      "args": [
+      "console": "integratedTerminal",
+      "program": "lib/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "name": "Flutter (Release - Windows)",
+    {
+    },
+      ]
+        "windows"
+        "-d",
+      "args": [
+      "console": "integratedTerminal",
+      "program": "lib/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "name": "Flutter (Debug - Windows)",
+    {
+  "configurations": [
+  "version": "0.2.0",
+
