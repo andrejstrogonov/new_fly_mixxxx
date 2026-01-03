@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/audio_device_model.dart';
 import '../providers/audio_device_analyzer.dart';
 
 class AudioDeviceAnalysisWidget extends StatelessWidget {
