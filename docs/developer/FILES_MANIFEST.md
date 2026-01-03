@@ -4,11 +4,11 @@
 
 | Файл | Описание | Для кого |
 |------|---------|----------|
-| **[START_HERE.md](START_HERE.md)** | ⭐ Начните отсюда! | Все |
-| **[README.md](README.md)** | Обзор проекта и основная информация | Все |
-| **[RUN_APP.md](RUN_APP.md)** | Все способы запуска приложения | Разработчики |
+| **[START_HERE.md](../user/START_HERE.md)** | ⭐ Начните отсюда! | Все |
+| **[README.md](../README.md)** | Обзор проекта и основная информация | Все |
+| **[RUN_APP.md](../RUN_APP.md)** | Все способы запуска приложения | Разработчики |
 | **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** | Индекс всей документации | Все |
-| **[PROJECT_STATUS.md](PROJECT_STATUS.md)** | Статус проекта и что было сделано | Все |
+| **[PROJECT_STATUS.md](../PROJECT_STATUS.md)** | Статус проекта и что было сделано | Все |
 | **[COMPLETION_SUMMARY.md](COMPLETION_SUMMARY.md)** | Детальный отчёт о выполненных работах | Все |
 
 ---
@@ -180,7 +180,7 @@ test/
 
 | Ситуация | Читайте файл |
 |----------|-------------|
-| **Запустить приложение быстро** | [START_HERE.md](START_HERE.md) или [RUN_APP.md](RUN_APP.md) |
+| **Запустить приложение быстро** | [START_HERE.md](../user/START_HERE.md) или [RUN_APP.md](../RUN_APP.md) |
 | **Понять структуру проекта** | [docs/developer/ARCHITECTURE.md](docs/developer/ARCHITECTURE.md) + этот файл |
 | **Начать разработку** | [docs/developer/SETUP.md](docs/developer/SETUP.md) |
 | **Найти решение проблемы** | [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) → TROUBLESHOOTING |
@@ -267,5 +267,5 @@ test/
 
 **Теперь вы знаете где всё находится! 🗺️**
 
-Начните с [START_HERE.md](START_HERE.md) или перейдите к интересующему вас файлу из таблицы выше.
+Начните с [START_HERE.md](../user/START_HERE.md) или перейдите к интересующему вас файлу из таблицы выше.
 

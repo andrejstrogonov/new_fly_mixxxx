@@ -6,7 +6,7 @@
 
 | Задача | Документ |
 |--------|----------|
-| **Установить и запустить приложение** | [RUN_APP.md](RUN_APP.md) |
+| **Установить и запустить приложение** | [RUN_APP.md](../RUN_APP.md) |
 | **Начать разработку** | [docs/developer/SETUP.md](docs/developer/SETUP.md) |
 | **Понять архитектуру проекта** | [docs/developer/ARCHITECTURE.md](docs/developer/ARCHITECTURE.md) |
 | **Решить проблему при разработке** | [docs/developer/TROUBLESHOOTING.md](docs/developer/TROUBLESHOOTING.md) |
@@ -20,8 +20,8 @@
 ## 📁 Полная структура документации
 
 ### Главные документы
-- 📄 **[README.md](README.md)** — Обзор проекта и основная информация
-- 📄 **[RUN_APP.md](RUN_APP.md)** — Как запустить приложение (все способы)
+- 📄 **[README.md](../README.md)** — Обзор проекта и основная информация
+- 📄 **[RUN_APP.md](../RUN_APP.md)** — Как запустить приложение (все способы)
 - 📄 **[COMPLETION_SUMMARY.md](COMPLETION_SUMMARY.md)** — Что было выполнено
 
 ### 👨‍💻 Документация для Разработчиков (`docs/developer/`)
@@ -63,19 +63,19 @@ docs/user/
 ## 🔍 Поиск по темам
 
 ### Установка и Запуск
-- [RUN_APP.md](RUN_APP.md) — Все способы запуска
+- [RUN_APP.md](../RUN_APP.md) — Все способы запуска
 - [docs/developer/SETUP.md](docs/developer/SETUP.md) — Подробная подготовка для разработчиков
 - [docs/user/QUICK_START.md](docs/user/QUICK_START.md) — Простой старт для пользователей
 
 ### Разработка
 - [docs/developer/ARCHITECTURE.md](docs/developer/ARCHITECTURE.md) — Как организован код
 - [docs/developer/CONTRIBUTING.md](docs/developer/CONTRIBUTING.md) — Как помочь проекту
-- [RUN_APP.md](RUN_APP.md) раздел "Конфигурация для разработки"
+- [RUN_APP.md](../RUN_APP.md) раздел "Конфигурация для разработки"
 
 ### Решение Проблем
 - [docs/developer/TROUBLESHOOTING.md](docs/developer/TROUBLESHOOTING.md) — 30+ решений для разработчиков
 - [docs/user/TROUBLESHOOTING.md](docs/user/TROUBLESHOOTING.md) — Решения для пользователей
-- [RUN_APP.md](RUN_APP.md) раздел "Решение типичных проблем"
+- [RUN_APP.md](../RUN_APP.md) раздел "Решение типичных проблем"
 
 ### Сборка и Выпуск
 - [docs/developer/DEPLOYMENT.md](docs/developer/DEPLOYMENT.md) — Полный процесс сборки
@@ -85,9 +85,9 @@ docs/user/
   - CI/CD примеры
 
 ### Запуск в разных средах
-- **VS Code**: [RUN_APP.md](RUN_APP.md) раздел "Вариант Б"
-- **Android Studio**: [RUN_APP.md](RUN_APP.md) раздел "Вариант В"
-- **Командная строка**: [RUN_APP.md](RUN_APP.md) раздел "Вариант А"
+- **VS Code**: [RUN_APP.md](../RUN_APP.md) раздел "Вариант Б"
+- **Android Studio**: [RUN_APP.md](../RUN_APP.md) раздел "Вариант В"
+- **Командная строка**: [RUN_APP.md](../RUN_APP.md) раздел "Вариант А"
 
 ## 🛠️ Полезные скрипты и конфигурации
 

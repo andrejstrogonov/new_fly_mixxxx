@@ -63,7 +63,7 @@ flutter run -d android
 | [docs/developer/TROUBLESHOOTING.md](docs/developer/TROUBLESHOOTING.md) | Разработчикам | Решить проблему |
 | [docs/user/QUICK_START.md](docs/user/QUICK_START.md) | Пользователям | Установить приложение |
 | [docs/user/USAGE.md](docs/user/USAGE.md) | Пользователям | Как пользоваться |
-| [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) | Всем | Найти нужный документ |
+| [DOCUMENTATION_INDEX.md](../developer/DOCUMENTATION_INDEX.md) | Всем | Найти нужный документ |
 
 ---
 
@@ -114,7 +114,7 @@ flutter analyze               # Проверить ошибки
 
 1. [TROUBLESHOOTING для разработчиков](docs/developer/TROUBLESHOOTING.md) (30+ решений)
 2. [TROUBLESHOOTING для пользователей](docs/user/TROUBLESHOOTING.md)
-3. [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) — найдите свой вопрос
+3. [DOCUMENTATION_INDEX.md](../developer/DOCUMENTATION_INDEX.md) — найдите свой вопрос
 4. Создайте Issue в GitHub
 
 ---
@@ -145,7 +145,7 @@ flutter analyze               # Проверить ошибки
 ## 📚 Главные документы
 
 **Быстро найти документ:**
-→ [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)
+→ [DOCUMENTATION_INDEX.md](../developer/DOCUMENTATION_INDEX.md)
 
 **Понять статус проекта:**
 → [PROJECT_STATUS.md](PROJECT_STATUS.md)

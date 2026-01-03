@@ -58,7 +58,7 @@ flutter run -d windows
 ## 📖 Документация
 
 ### Для пользователей (начните отсюда):
-1. **[QUICK_START_NEW_FEATURES.md](QUICK_START_NEW_FEATURES.md)** - 5 минут для старта
+1. **[QUICK_START_NEW_FEATURES.md](../QUICK_START_NEW_FEATURES.md)** - 5 минут для старта
    - Как использовать анализ оборудования
    - Как генерировать композиции
    - Быстрые примеры

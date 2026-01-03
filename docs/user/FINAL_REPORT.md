@@ -126,9 +126,9 @@ flutter run
 | Когда нужно | Прочитайте |
 |-------------|----------|
 | Быстро запустить | [START_HERE.md](START_HERE.md) |
-| Все способы запуска | [RUN_APP.md](RUN_APP.md) |
+| Все способы запуска | [RUN_APP.md](../RUN_APP.md) |
 | Настроить окружение | [docs/developer/SETUP.md](docs/developer/SETUP.md) |
-| Найти документ | [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) |
+| Найти документ | [DOCUMENTATION_INDEX.md](../developer/DOCUMENTATION_INDEX.md) |
 | Решить проблему | [TROUBLESHOOTING](docs/developer/TROUBLESHOOTING.md) |
 | Собрать для production | [DEPLOYMENT.md](docs/developer/DEPLOYMENT.md) |
 | Понять код | [ARCHITECTURE.md](docs/developer/ARCHITECTURE.md) |
@@ -172,8 +172,8 @@ flutter run
 
 ## 📞 Если что-то не понимаете
 
-1. **Откройте [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** → там есть индекс всех документов
-2. **Посмотрите [FILES_MANIFEST.md](FILES_MANIFEST.md)** → там описаны все файлы
+1. **Откройте [DOCUMENTATION_INDEX.md](../developer/DOCUMENTATION_INDEX.md)** → там есть индекс всех документов
+2. **Посмотрите [FILES_MANIFEST.md](../developer/FILES_MANIFEST.md)** → там описаны все файлы
 3. **Прочитайте раздел TROUBLESHOOTING** → там 30+ решений
 4. **Выполните `flutter doctor -v`** → для диагностики
 5. **Создайте Issue** → если ничего не помогло
