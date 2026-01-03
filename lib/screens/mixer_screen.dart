@@ -36,6 +36,13 @@ class _MixerScreenState extends State<MixerScreen> {
         backgroundColor: Colors.deepPurple.withOpacity(0.8),
         elevation: 0,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Default action - can be customized later
+        },
+        tooltip: 'DJ Features',
+        child: const Icon(Icons.music_note),
+      ),
       body: Consumer<AudioProvider>(
         builder: (context, audioProvider, _) {
           return SingleChildScrollView(

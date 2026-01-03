@@ -77,7 +77,7 @@ class FrequencyResponseWidget extends StatelessWidget {
 
     for (int i = 0; i < points; i++) {
       double logFreq = logMin + (logMax - logMin) * (i / (points - 1));
-      double freq = pow(10.0, logFreq).toDouble();
+      double freq = pow(10.0, logFreq) as double;
       frequencies.add(freq.toInt());
     }
 
@@ -354,31 +354,33 @@ class FrequencyResponseWidget extends StatelessWidget {
         color: const Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Диаграмма Боде (ЛФЧХ) - Логарифмическая частотная характеристика',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Colors.amber,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Expanded(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Амплитудная характеристика Боде
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.deepPurple.withOpacity(0.3),
-                      ),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
+                const Text(
+                  'Диаграмма Боде (ЛФЧХ) - Логарифмическая частотная характеристика',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 400,
+                  child: Column(
+                    children: [
+                      // Амплитудная характеристика Боде
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.deepPurple.withOpacity(0.3),
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
                     child: LineChart(
                       LineChartData(
                         gridData: FlGridData(
@@ -602,12 +604,12 @@ class FrequencyResponseWidget extends StatelessWidget {
                     ),
                   ),
                 ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+          );
+        }
+      }
 
