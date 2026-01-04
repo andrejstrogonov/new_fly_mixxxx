@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:math';
 import '../providers/audio_provider.dart';
+import '../utils/frequency_response_calculator.dart';
 
 class FrequencyResponseWidget extends StatelessWidget {
   const FrequencyResponseWidget({super.key});
@@ -25,44 +26,46 @@ class FrequencyResponseWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.3)),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Frequency Response (АЧХ & ФЧХ & Диаграмма Боде)',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Frequency Response (АЧХ & ФЧХ & Диаграмма Боде)',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                TabBar(
-                  labelColor: Colors.deepPurple,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Colors.deepPurple,
-                  tabs: const [
-                    Tab(text: 'АЧХ (Амплитуда)'),
-                    Tab(text: 'ФЧХ (Фаза)'),
-                    Tab(text: 'Диаграмма Боде'),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 400,
-                  child: TabBarView(
-                    children: [
-                      // АЧХ
-                      _buildAchxChart(frequencies, magnitudes),
-                      // ФЧХ
-                      _buildPhchxChart(frequencies, phases),
-                      // Диаграмма Боде
-                      _buildBodeChart(frequencies, magnitudes, phases),
+                  const SizedBox(height: 16),
+                  TabBar(
+                    labelColor: Colors.deepPurple,
+                    unselectedLabelColor: Colors.grey,
+                    indicatorColor: Colors.deepPurple,
+                    tabs: const [
+                      Tab(text: 'АЧХ (Амплитуда)'),
+                      Tab(text: 'ФЧХ (Фаза)'),
+                      Tab(text: 'Диаграмма Боде'),
                     ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 400,
+                    child: TabBarView(
+                      children: [
+                        // АЧХ
+                        _buildAchxChart(frequencies, magnitudes),
+                        // ФЧХ
+                        _buildPhchxChart(frequencies, phases),
+                        // Диаграмма Боде
+                        _buildBodeChart(frequencies, magnitudes, phases),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -73,13 +76,15 @@ class FrequencyResponseWidget extends StatelessWidget {
   List<int> _generateFrequencies() {
     // Generate logarithmically spaced frequencies from 20Hz to 20kHz
     List<int> frequencies = [];
+    // Using native log10 calculation: log10(x) = log(x) / log(10)
     double logMin = log(20.0) / log(10.0);  // log10(20)
     double logMax = log(20000.0) / log(10.0);  // log10(20000)
     int points = 50;
 
     for (int i = 0; i < points; i++) {
       double logFreq = logMin + (logMax - logMin) * (i / (points - 1));
-      double freq = pow(10.0, logFreq).toDouble();
+      // pow(10, x) calculation: 10^x = e^(x * ln(10))
+      double freq = exp(logFreq * log(10.0));
       frequencies.add(freq.toInt());
     }
 
@@ -342,7 +347,8 @@ class FrequencyResponseWidget extends StatelessWidget {
     List<FlSpot> phaseSpots = [];
 
     for (int i = 0; i < frequencies.length; i++) {
-      double freqLog = log(frequencies[i].toDouble()) / log(10.0);  // log10(frequency)
+      // log10(frequency) = log(frequency) / log(10)
+      double freqLog = log(frequencies[i].toDouble()) / log(10.0);
       double magnitude = magnitudes[i].clamp(-12.0, 12.0);
       double phase = phases[i].clamp(-180.0, 180.0);
 
@@ -370,11 +376,13 @@ class FrequencyResponseWidget extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 400,
+            height: 380,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Амплитудная характеристика Боде
-                Expanded(
+                SizedBox(
+                  height: 185,
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
@@ -491,7 +499,8 @@ class FrequencyResponseWidget extends StatelessWidget {
                   ),
                 ),
                 // Фазовая характеристика Боде
-                Expanded(
+                SizedBox(
+                  height: 185,
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(

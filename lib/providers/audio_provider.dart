@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
+import '../utils/frequency_response_calculator.dart';
 
 // Track model
 class Track {
@@ -406,24 +407,14 @@ class AudioProvider extends ChangeNotifier {
 
   // Frequency response calculation for visualization
   List<double> calculateFrequencyResponse(List<int> frequencies) {
-    // Simplified frequency response calculation
-    // Maps EQ band adjustments to frequency response curve
+    // Используем правильные расчеты диаграммы Боде
     List<double> response = [];
     
     for (int freq in frequencies) {
-      double magnitude = 0.0;
-      
-      // Calculate contribution from each EQ band
-      for (int i = 0; i < _eqBands.length; i++) {
-        double bandFreq = _getBandFrequency(i);
-        double bandwidth = _getBandwidth(i);
-        
-        // Gaussian-like response centered at band frequency
-        double distance = (freq - bandFreq).abs();
-        double contribution = _eqBands[i] * exp(-(distance * distance) / (2 * bandwidth * bandwidth));
-        magnitude += contribution;
-      }
-      
+      double magnitude = FrequencyResponseCalculator.calculateMagnitudeDb(
+        freq.toDouble(),
+        _eqBands,
+      );
       response.add(magnitude);
     }
     
@@ -441,22 +432,15 @@ class AudioProvider extends ChangeNotifier {
     return 100.0 + (bandIndex * 50.0);
   }
 
-  // Phase response calculation (simplified)
+  // Phase response calculation (correct Bode diagram)
   List<double> calculatePhaseResponse(List<int> frequencies) {
     List<double> phases = [];
     
     for (int freq in frequencies) {
-      double phase = 0.0;
-      
-      for (int i = 0; i < _eqBands.length; i++) {
-        if (_eqBands[i] != 0.0) {
-          double bandFreq = _getBandFrequency(i);
-          // Simplified phase calculation
-          double phaseDiff = (freq - bandFreq) / bandFreq;
-          phase += _eqBands[i] * atan(phaseDiff) * 180 / 3.14159;
-        }
-      }
-      
+      double phase = FrequencyResponseCalculator.calculatePhaseDegrees(
+        freq.toDouble(),
+        _eqBands,
+      );
       phases.add(phase);
     }
     
