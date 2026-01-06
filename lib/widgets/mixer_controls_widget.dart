@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/audio_provider.dart';
+import 'rotary_knob_widget.dart';
 
 class MixerControlsWidget extends StatelessWidget {
   const MixerControlsWidget({super.key});
@@ -27,254 +28,134 @@ class MixerControlsWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Crossfader
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Crossfader',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
+              // Main Controls Row (Crossfader, Master Volume, BPM, Tempo)
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    // Crossfader
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 100,
+                          child: Slider(
+                            value: audioProvider.crossfaderPosition,
+                            min: 0,
+                            max: 1,
+                            divisions: 100,
+                            onChanged: (value) {
+                              audioProvider.setCrossfaderPosition(value);
+                            },
+                            activeColor: Colors.deepPurple,
+                            inactiveColor: Colors.grey.withOpacity(0.3),
+                          ),
                         ),
-                      ),
-                      Text(
-                        audioProvider.crossfaderPosition < 0.5
-                            ? 'Deck 1 (${((1 - audioProvider.crossfaderPosition) * 100).toStringAsFixed(0)}%)'
-                            : 'Deck 2 (${(audioProvider.crossfaderPosition * 100).toStringAsFixed(0)}%)',
-                        style: const TextStyle(
-                          color: Colors.deepPurple,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                        const Text(
+                          'Crossfader',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Slider(
-                    value: audioProvider.crossfaderPosition,
-                    min: 0,
-                    max: 1,
-                    divisions: 100,
-                    onChanged: (value) {
-                      audioProvider.setCrossfaderPosition(value);
-                    },
-                    activeColor: Colors.deepPurple,
-                    inactiveColor: Colors.grey.withOpacity(0.3),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // Master Volume
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Master Volume',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
+                        Text(
+                          audioProvider.crossfaderPosition < 0.5
+                              ? 'D1 (${((1 - audioProvider.crossfaderPosition) * 100).toStringAsFixed(0)}%)'
+                              : 'D2 (${(audioProvider.crossfaderPosition * 100).toStringAsFixed(0)}%)',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.deepPurple,
+                          ),
                         ),
-                      ),
-                      Text(
-                        '${(audioProvider.masterVolume * 100).toStringAsFixed(0)}%',
-                        style: const TextStyle(
-                          color: Colors.deepPurple,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Slider(
-                    value: audioProvider.masterVolume,
-                    min: 0,
-                    max: 1,
-                    divisions: 100,
-                    onChanged: (value) {
-                      audioProvider.setMasterVolume(value);
-                    },
-                    activeColor: Colors.deepPurple,
-                    inactiveColor: Colors.grey.withOpacity(0.3),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // BPM Control
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'BPM',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                      Text(
-                        audioProvider.bpm.toStringAsFixed(1),
-                        style: const TextStyle(
-                          color: Colors.deepPurple,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Slider(
-                    value: audioProvider.bpm,
-                    min: 60,
-                    max: 240,
-                    divisions: 180,
-                    onChanged: (value) {
-                      audioProvider.setBpm(value);
-                    },
-                    activeColor: Colors.deepPurple,
-                    inactiveColor: Colors.grey.withOpacity(0.3),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // Tempo/Speed Control
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Tempo',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                      Text(
-                        '${(audioProvider.tempoMultiplier * 100).toStringAsFixed(0)}%',
-                        style: const TextStyle(
-                          color: Colors.deepPurple,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Slider(
-                    value: audioProvider.tempoMultiplier,
-                    min: 0.5,
-                    max: 2.0,
-                    divisions: 30,
-                    onChanged: (value) {
-                      audioProvider.setTempoMultiplier(value);
-                    },
-                    activeColor: Colors.deepPurple,
-                    inactiveColor: Colors.grey.withOpacity(0.3),
-                  ),
-                ],
+                      ],
+                    ),
+                    const SizedBox(width: 16),
+                    // Master Volume Knob
+                    RotaryKnobWidget(
+                      value: audioProvider.masterVolume * 100,
+                      min: 0,
+                      max: 100,
+                      onChanged: (value) {
+                        audioProvider.setMasterVolume(value / 100);
+                      },
+                      label: 'Master\nVol',
+                      unit: '%',
+                      size: 75,
+                      activeColor: Colors.deepPurple,
+                      inactiveColor: Colors.grey,
+                    ),
+                    const SizedBox(width: 16),
+                    // BPM Knob
+                    RotaryKnobWidget(
+                      value: audioProvider.bpm,
+                      min: 60,
+                      max: 240,
+                      onChanged: (value) {
+                        audioProvider.setBpm(value);
+                      },
+                      label: 'BPM',
+                      unit: '',
+                      size: 75,
+                      activeColor: Colors.deepPurple,
+                      inactiveColor: Colors.grey,
+                    ),
+                    const SizedBox(width: 16),
+                    // Tempo Knob
+                    RotaryKnobWidget(
+                      value: audioProvider.tempoMultiplier * 100,
+                      min: 50,
+                      max: 200,
+                      onChanged: (value) {
+                        audioProvider.setTempoMultiplier(value / 100);
+                      },
+                      label: 'Tempo',
+                      unit: '%',
+                      size: 75,
+                      activeColor: Colors.deepPurple,
+                      inactiveColor: Colors.grey,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 24),
-              // Deck Volume Controls
+              // Deck Volume Controls (Horizontal knobs)
               const Text(
                 'Deck Volumes',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
               const SizedBox(height: 12),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Deck 1',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              '${(audioProvider.volume1 * 100).toStringAsFixed(0)}%',
-                              style: const TextStyle(
-                                color: Colors.deepPurple,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Slider(
-                          value: audioProvider.volume1,
-                          min: 0,
-                          max: 1,
-                          divisions: 100,
-                          onChanged: (value) {
-                            audioProvider.setVolume1(value);
-                          },
-                          activeColor: Colors.deepPurple,
-                          inactiveColor: Colors.grey.withOpacity(0.3),
-                        ),
-                      ],
-                    ),
+                  RotaryKnobWidget(
+                    value: audioProvider.volume1 * 100,
+                    min: 0,
+                    max: 100,
+                    onChanged: (value) {
+                      audioProvider.setVolume1(value / 100);
+                    },
+                    label: 'Deck 1\nVol',
+                    unit: '%',
+                    size: 75,
+                    activeColor: Colors.deepPurple,
+                    inactiveColor: Colors.grey,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Deck 2',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              '${(audioProvider.volume2 * 100).toStringAsFixed(0)}%',
-                              style: const TextStyle(
-                                color: Colors.deepPurple,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Slider(
-                          value: audioProvider.volume2,
-                          min: 0,
-                          max: 1,
-                          divisions: 100,
-                          onChanged: (value) {
-                            audioProvider.setVolume2(value);
-                          },
-                          activeColor: Colors.deepPurple,
-                          inactiveColor: Colors.grey.withOpacity(0.3),
-                        ),
-                      ],
-                    ),
+                  RotaryKnobWidget(
+                    value: audioProvider.volume2 * 100,
+                    min: 0,
+                    max: 100,
+                    onChanged: (value) {
+                      audioProvider.setVolume2(value / 100);
+                    },
+                    label: 'Deck 2\nVol',
+                    unit: '%',
+                    size: 75,
+                    activeColor: Colors.deepPurple,
+                    inactiveColor: Colors.grey,
                   ),
                 ],
               ),

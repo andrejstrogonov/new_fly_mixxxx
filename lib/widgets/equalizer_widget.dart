@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/audio_provider.dart';
+import 'rotary_knob_widget.dart';
 
 class EqualizerWidget extends StatelessWidget {
   const EqualizerWidget({super.key});
@@ -56,14 +57,16 @@ class EqualizerWidget extends StatelessWidget {
               const SizedBox(height: 16),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(
-                    10,
-                    (index) => _buildEqBand(
-                      context,
-                      index,
-                      audioProvider,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(
+                      10,
+                      (index) => _buildEqKnob(
+                        index,
+                        audioProvider,
+                      ),
                     ),
                   ),
                 ),
@@ -75,49 +78,25 @@ class EqualizerWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildEqBand(
-    BuildContext context,
+  Widget _buildEqKnob(
     int index,
     AudioProvider audioProvider,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 150,
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Slider(
-                value: audioProvider.eqBands[index],
-                min: -12,
-                max: 12,
-                divisions: 24,
-                onChanged: (value) {
-                  audioProvider.setEqBand(index, value);
-                },
-                activeColor: Colors.deepPurple,
-                inactiveColor: Colors.grey.withOpacity(0.3),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            bandLabels[index],
-            style: const TextStyle(
-              fontSize: 10,
-              color: Colors.grey,
-            ),
-          ),
-          Text(
-            '${audioProvider.eqBands[index].toStringAsFixed(1)}dB',
-            style: const TextStyle(
-              fontSize: 9,
-              color: Colors.deepPurple,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: RotaryKnobWidget(
+        value: audioProvider.eqBands[index],
+        min: -12,
+        max: 12,
+        onChanged: (value) {
+          audioProvider.setEqBand(index, value);
+        },
+        label: bandLabels[index],
+        unit: 'dB',
+        size: 70,
+        showValue: true,
+        activeColor: Colors.deepPurple,
+        inactiveColor: Colors.grey,
       ),
     );
   }

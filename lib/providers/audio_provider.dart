@@ -57,8 +57,8 @@ class AudioProvider extends ChangeNotifier {
     ),
     'Tango': EQPreset(
       name: 'Tango',
-      bands: [-2.0, -1.0, 1.0, 2.0, 3.0, 2.0, 1.0, -1.0, -2.0, -3.0],
-      description: 'Enhanced midrange for tango vocals and strings',
+      bands: [1.0, 2.0, 1.0, 1.5, 2.0, 1.0, 0.5, -0.5, -1.0, 0.0],
+      description: 'Enhanced midrange for tango vocals and strings - optimized for bandoneon and violin',
     ),
     'Jazz': EQPreset(
       name: 'Jazz',
