@@ -34,10 +34,11 @@ lib/
 └── widgets/
     ├── deck_widget.dart               # Дек (воспроизведение, громкость, прогресс)
     ├── mixer_controls_widget.dart     # Кроссфейдер, BPM, Master Volume
-    ├── equalizer_widget.dart          # 10-полосный EQ + Presets
-    ├── presets_widget.dart            # Управление предустановками
+    ├── equalizer_widget.dart          # 10-полосный EQ
+    ├── eq_preset_carousel_widget.dart # ✨ Карусель EQ предустановок жанров
+    ├── presets_widget.dart            # (Deprecated) Управление предустановками
     ├── frequency_response_widget.dart  # АЧХ и ФЧХ графики
-    └── track_loader_widget.dart       # ✨ НОВОЕ: Загрузка и очереди
+    └── track_loader_widget.dart       # Загрузка и очереди
 ```
 
 ---
@@ -335,6 +336,28 @@ flutter run -d windows --profile
 ```bash
 flutter build windows --release
 ```
+
+---
+
+## 🎨 UI/UX Компоненты
+
+### EQPresetCarouselWidget (✨ NEW)
+
+Карусель для переключения EQ предустановок жанров музыки.
+
+**Особенности**:
+- Компактный дизайн (экономит ~40% пространства)
+- Анимированная 3D карусель при прокрутке
+- 9 предустановок жанров: Flat, Tango, Jazz, Folk, Waltz, Bass/Treble Boost, Vocal
+- Навигация: свайп или клик на точки-индикаторы
+- Автоматическое применение preset при прокрутке
+
+**Использование**:
+```dart
+const EQPresetCarouselWidget()
+```
+
+Подробнее: [EQ_PRESET_CAROUSEL.md](EQ_PRESET_CAROUSEL.md)
 
 ---
 

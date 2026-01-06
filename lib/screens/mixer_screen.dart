@@ -4,7 +4,7 @@ import '../providers/audio_provider.dart';
 import '../widgets/deck_widget.dart';
 import '../widgets/mixer_controls_widget.dart';
 import '../widgets/equalizer_widget.dart';
-import '../widgets/presets_widget.dart';
+import '../widgets/eq_preset_carousel_widget.dart';
 import '../widgets/frequency_response_widget.dart';
 import '../widgets/track_loader_widget.dart';
 import '../widgets/audio_device_analysis_widget.dart';
@@ -88,8 +88,8 @@ class _MixerScreenState extends State<MixerScreen> {
                   // Equalizer
                   const EqualizerWidget(),
                   const SizedBox(height: 24),
-                  // Presets
-                  const PresetsWidget(),
+                  // EQ Preset Carousel
+                  const EQPresetCarouselWidget(),
                   const SizedBox(height: 24),
                   // Frequency Response
                   const FrequencyResponseWidget(),

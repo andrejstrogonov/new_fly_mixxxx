@@ -25,6 +25,7 @@
 
 - **🎚️ Микшер**: Работа с несколькими аудио дорожками одновременно
 - **🎛️ 10-полосный EQ**: С предустановками для разных жанров (Bass Boost, Treble, и др.)
+- **🎪 EQ Preset Carousel**: Компактная карусель с 9 жанрами (Tango, Jazz, Folk, и др.) ✨ NEW
 - **📊 Частотная характеристика**: АЧХ, ФЧХ, диаграмма Боде
 - **🔍 Анализ оборудования**: Определение параметров аудиоустройств
 - **🤖 AI Композиции**: Генерирование мелодий через нейросеть API
@@ -51,6 +52,22 @@ flutter run -d android          # Android
 
 Для полной информации см. [RUN_APP.md](RUN_APP.md)
 
+## 🎪 Что нового в v0.2.0
+
+### ✨ EQ Preset Carousel
+Компактный компонент для быстрого переключения между 9 жанрами музыки:
+
+**Преимущества:**
+- 🎨 **Компактный дизайн** - экономит ~40% пространства
+- 🔄 **Красивые анимации** - 3D эффекты при прокрутке
+- 👆 **Интуитивная навигация** - свайп или клик на точки
+- 📝 **Информативность** - название, описание и статус
+
+**Доступные жанры:**
+Flat, Tango, Jazz, Folk Argentino, Folk Russian, Cross-step Waltz, Bass Boost, Treble Boost, Vocal
+
+Подробнее: [EQ_PRESET_CAROUSEL.md](docs/developer/EQ_PRESET_CAROUSEL.md)
+
 ## 📁 Структура проекта
 
 ```
@@ -61,6 +78,7 @@ lib/
 ├── widgets/                      # Переиспользуемые компоненты UI
 │   ├── frequency_response_widget.dart
 │   ├── equalizer_widget.dart
+│   ├── eq_preset_carousel_widget.dart  # ✨ NEW: Карусель жанров
 │   ├── mixer_controls_widget.dart
 │   ├── deck_widget.dart
 │   └── ...
@@ -75,11 +93,13 @@ docs/
 │   ├── SETUP.md
 │   ├── CONTRIBUTING.md
 │   ├── ARCHITECTURE.md
+│   ├── EQ_PRESET_CAROUSEL.md     # ✨ NEW: Документация для новой фичи
 │   ├── TROUBLESHOOTING.md
 │   └── DEPLOYMENT.md
 └── user/                         # Для пользователей
     ├── QUICK_START.md
     ├── USAGE.md
+    ├── FEATURES.md
     └── TROUBLESHOOTING.md
 ```
 
@@ -205,7 +225,6 @@ MIT License — см. [LICENSE](LICENSE) файл
 ---
 
 Спасибо что вы используете Fly Mixxx! 🎵
-```
 
 ## Usage
 
