@@ -35,6 +35,51 @@ class _TrackLoaderWidgetState extends State<TrackLoaderWidget> {
                 ),
               ),
               const SizedBox(height: 16),
+              // Current Playing Tracks Section
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1a1a1a),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.deepPurple.withOpacity(0.2)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Now Playing',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildNowPlayingCard(
+                            context,
+                            deckNumber: 1,
+                            audioProvider: audioProvider,
+                            queue: audioProvider.queue1,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildNowPlayingCard(
+                            context,
+                            deckNumber: 2,
+                            audioProvider: audioProvider,
+                            queue: audioProvider.queue2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
               // Decks section with queues
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,6 +115,77 @@ class _TrackLoaderWidgetState extends State<TrackLoaderWidget> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildNowPlayingCard(
+    BuildContext context, {
+    required int deckNumber,
+    required AudioProvider audioProvider,
+    required List<Track> queue,
+  }) {
+    final currentIndex = deckNumber == 1
+        ? audioProvider.currentTrackIndex1
+        : audioProvider.currentTrackIndex2;
+
+    final currentTrack = currentIndex >= 0 && currentIndex < queue.length
+        ? queue[currentIndex]
+        : null;
+
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Deck $deckNumber',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 6),
+          if (currentTrack != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  currentTrack.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (currentTrack.duration != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    _formatDuration(currentTrack.duration!),
+                    style: const TextStyle(
+                      color: Colors.deepPurple,
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ],
+            )
+          else
+            const Text(
+              'No track loaded',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 10,
+              ),
+            ),
+        ],
+      ),
     );
   }
 

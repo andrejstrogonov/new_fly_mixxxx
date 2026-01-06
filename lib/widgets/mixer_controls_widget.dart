@@ -184,6 +184,100 @@ class MixerControlsWidget extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 24),
+              // Deck Volume Controls
+              const Text(
+                'Deck Volumes',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Deck 1',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              '${(audioProvider.volume1 * 100).toStringAsFixed(0)}%',
+                              style: const TextStyle(
+                                color: Colors.deepPurple,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Slider(
+                          value: audioProvider.volume1,
+                          min: 0,
+                          max: 1,
+                          divisions: 100,
+                          onChanged: (value) {
+                            audioProvider.setVolume1(value);
+                          },
+                          activeColor: Colors.deepPurple,
+                          inactiveColor: Colors.grey.withOpacity(0.3),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Deck 2',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              '${(audioProvider.volume2 * 100).toStringAsFixed(0)}%',
+                              style: const TextStyle(
+                                color: Colors.deepPurple,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Slider(
+                          value: audioProvider.volume2,
+                          min: 0,
+                          max: 1,
+                          divisions: 100,
+                          onChanged: (value) {
+                            audioProvider.setVolume2(value);
+                          },
+                          activeColor: Colors.deepPurple,
+                          inactiveColor: Colors.grey.withOpacity(0.3),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );
