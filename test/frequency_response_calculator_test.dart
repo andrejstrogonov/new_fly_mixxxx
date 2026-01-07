@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:new_fly_mixxxx/utils/frequency_response_calculator.dart';
-import 'dart:math';
 
 void main() {
   group('FrequencyResponseCalculator Tests', () {

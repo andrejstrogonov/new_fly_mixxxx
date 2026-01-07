@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
-import 'dart:math';
 import '../utils/frequency_response_calculator.dart';
 
 // Track model

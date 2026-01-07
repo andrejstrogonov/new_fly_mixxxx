@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:math';
 import '../providers/audio_provider.dart';
-import '../utils/frequency_response_calculator.dart';
 
 class FrequencyResponseWidget extends StatelessWidget {
   const FrequencyResponseWidget({super.key});
