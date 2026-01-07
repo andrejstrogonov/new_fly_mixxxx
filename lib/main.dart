@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/mixer_screen.dart';
-import 'providers/audio_provider.dart';
-import 'providers/audio_device_analyzer.dart';
-import 'providers/composition_generator.dart';
+import 'services/service_locator.dart';
+import 'core/utils/logger.dart';
+import 'core/constants/ui_constants.dart';
 
-void main() {
+void main() async {
+  // Инициализируем loggerирование
+  Logger.setLogLevel(LogLevel.info);
+
+  // Инициализируем Service Locator (Dependency Injection)
+  await ServiceLocator.init();
+
   runApp(const MyApp());
 }
 
@@ -14,24 +20,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AudioProvider()),
-        ChangeNotifierProvider(create: (_) => AudioDeviceAnalyzer()),
-        ChangeNotifierProvider(create: (_) => CompositionGeneratorProvider()),
-      ],
-      child: MaterialApp(
-        title: 'Fly Mixxx - DJ Mixer',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple,
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
-          scaffoldBackgroundColor: const Color(0xFF1a1a1a),
+    return MaterialApp(
+      title: 'Fly Mixxx - DJ Mixer',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.dark,
         ),
-        home: const MixerScreen(),
+        useMaterial3: true,
+        scaffoldBackgroundColor: UIConstants.backgroundColor,
       ),
+      home: const MixerScreen(),
     );
   }
 }

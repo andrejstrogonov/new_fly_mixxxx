@@ -90,21 +90,20 @@ class _RotaryKnobWidgetState extends State<RotaryKnobWidget> {
         SizedBox(
           width: widget.size,
           height: widget.size,
-          child: Listener(
-            onPointerMove: (event) {
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              // Конвертируем глобальную позицию в локальную координату виджета
               final renderBox = context.findRenderObject() as RenderBox?;
               if (renderBox != null) {
-                final localPosition = renderBox.globalToLocal(event.position);
+                final localPosition = renderBox.globalToLocal(details.globalPosition);
                 _onPointerMove(localPosition);
               }
             },
-            onPointerDown: (_) => {},
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                // Конвертируем глобальную позицию в локальную координату виджета
+            child: Listener(
+              onPointerMove: (PointerMoveEvent event) {
                 final renderBox = context.findRenderObject() as RenderBox?;
                 if (renderBox != null) {
-                  final localPosition = renderBox.globalToLocal(details.globalPosition);
+                  final localPosition = renderBox.globalToLocal(event.position);
                   _onPointerMove(localPosition);
                 }
               },
@@ -119,7 +118,6 @@ class _RotaryKnobWidgetState extends State<RotaryKnobWidget> {
               ),
             ),
           ),
-        ),
         const SizedBox(height: 8),
         // Метка
         Text(

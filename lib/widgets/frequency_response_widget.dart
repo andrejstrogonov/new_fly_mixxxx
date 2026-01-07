@@ -90,6 +90,17 @@ class FrequencyResponseWidget extends StatelessWidget {
     return frequencies;
   }
 
+  /// Вычисляет decibels из линейного значения
+  double _linearToDb(double value) {
+    if (value <= 0) return -120.0; // минимум -120дБ
+    return 20 * log(value) / log(10);
+  }
+
+  /// Вычисляет линейное значение из decibels
+  double _dbToLinear(double dbValue) {
+    return pow(10, dbValue / 20).toDouble();
+  }
+
   Widget _buildAchxChart(List<int> frequencies, List<double> magnitudes) {
     // Normalize frequencies to 0-100 scale for chart
     List<FlSpot> spots = [];

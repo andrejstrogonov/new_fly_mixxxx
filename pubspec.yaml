@@ -43,6 +43,11 @@ dependencies:
   http: ^1.1.0
   dio: ^5.3.0
 
+  # MVVM и Clean Architecture зависимости
+  get_it: ^7.6.0              # Dependency Injection (Service Locator)
+  equatable: ^2.0.5           # Сравнение объектов в Equatable классах
+  logger: ^2.1.0              # Логирование (опционально)
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

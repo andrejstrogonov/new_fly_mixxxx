@@ -1,103 +1,289 @@
-Настройка окружения для разработки (Windows)
+# Developer Setup Guide
 
-## Системные требования
+## Требования
 
-- **ОС**: Windows 10 или новее (x64)
-- **Flutter SDK**: версия >=3.0.0
-- **Dart SDK**: идёт вместе с Flutter
-- **Android Studio** или **VS Code** с расширением Flutter
-- **Visual Studio Build Tools 2019+** (для Windows-сборки) или полный Visual Studio
+- **Flutter SDK**: 3.0.0 или выше
+- **Dart SDK**: 3.0.0 или выше
+- **Android SDK**: API 21 или выше (для Android разработки)
+- **Xcode**: 13.0 или выше (для iOS разработки)
+- **Visual Studio 2022**: для Windows разработки
+- **Git**: для управления версиями
 
-## Минимальные шаги установки
+## Установка
 
-### 1. Установка Flutter
+### 1. Клонирование репозитория
 
-1. Скачайте Flutter с https://flutter.dev
-2. Распакуйте в папку без пробелов (например, `C:\flutter`)
-3. Добавьте `C:\flutter\bin` в переменную окружения PATH
-4. Откройте новый терминал и проверьте:
 ```bash
-flutter doctor
+git clone https://github.com/your-repo/new_fly_mixxxx.git
+cd new_fly_mixxxx
 ```
-Исправьте все требуемые зависимости, следуя советам `flutter doctor`.
 
-### 2. Получение зависимостей
+### 2. Установка зависимостей
 
-В корне проекта:
 ```bash
-cd C:\Users\strog\StudioProjects\new_fly_mixxxx
 flutter pub get
 ```
 
-### 3. Выбор целевой платформы и IDE
+### 3. Генерация кода (если необходимо)
 
-#### Для VS Code:
-1. Установите расширения:
-   - Flutter (Dart Code)
-   - Dart
-2. Откройте папку проекта
-3. Откройте `RUN_APP.md` или используйте конфигурации в `.vscode/launch.json`
-
-#### Для Android Studio:
-1. Откройте проект (File > Open)
-2. Дождитесь индексации проекта
-3. Выберите целевое устройство в правом верхнем углу
-4. Нажмите зелёную кнопку Run (Shift+F10)
-
-## Запуск в режиме разработки
-
-### Windows (командная строка)
 ```bash
-flutter run -d windows
+flutter pub run build_runner build
 ```
 
-### Android (физическое устройство или эмулятор)
+## Конфигурация IDE
+
+### Android Studio / IntelliJ IDEA
+
+1. Откройте проект в Android Studio
+2. Android Studio автоматически определит Flutter SDK
+3. Подождите завершения индексирования проекта
+
+### VS Code
+
+Установите расширения:
+
+- **Dart**: официальное расширение для Dart
+- **Flutter**: официальное расширение для Flutter
+
+## Запуск на разных платформах
+
+### Windows (Desktop)
+
 ```bash
-# Списка доступных устройств
+# Список доступных Windows devices
 flutter devices
 
-# Запуск
-flutter run -d android
+# Запуск на Windows
+flutter run -d windows
+
+# Запуск в release режиме
+flutter run -d windows --release
+
+# Build
+flutter build windows
 ```
 
-### Все платформы
+### Android
+
 ```bash
-flutter run
+# Запуск на Android эмуляторе
+flutter run -d emulator
+
+# Запуск на физическом устройстве
+flutter run -d <device-id>
+
+# Build APK
+flutter build apk
+
+# Build App Bundle
+flutter build appbundle
 ```
 
-## Windows-специфичные советы
-
-- **LNK1168 ошибка (файл .exe занят)**: перед билдом завершите работающий процесс приложения. В репозитории есть скрипт `scripts/kill_windows_exe.ps1` который завершит исполняемый файл по имени проекта.
-  ```bash
-  .\scripts\kill_windows_exe.ps1 -exeName "new_fly_mixxxx"
-  ```
-- **Ошибки с пакетом win32**: обновите Flutter/Dart до актуальной стабильной версии или используйте совместимую версию пакета (см. docs/developer/TROUBLESHOOTING.md).
-- **Visual Studio Build Tools не найден**: убедитесь что установлены C++ build tools. Скачайте с https://visualstudio.microsoft.com/downloads/
-
-## Расширенные команды
+### iOS
 
 ```bash
-# Запуск с подробным логированием
-flutter run --verbose
+# Запуск на iOS эмуляторе
+flutter run -d ios
 
-# Запуск в режиме Release (оптимизированный)
-flutter run --release
+# Запуск на физическом устройстве
+flutter run -d <device-id>
 
-# Сборка без запуска
-flutter build windows    # Windows
-flutter build apk        # Android APK
-flutter build aab        # Android App Bundle
+# Build
+flutter build ios
+```
 
-# Очистка кэша
+## Тестирование
+
+### Запуск всех тестов
+
+```bash
+flutter test
+```
+
+### Запуск конкретного теста
+
+```bash
+flutter test test/presentation/viewmodels/base_viewmodel_test.dart
+```
+
+### С покрытием кода
+
+```bash
+flutter test --coverage
+```
+
+Результат будет в `coverage/lcov.info`
+
+## Troubleshooting
+
+### Ошибка: "Flutter SDK not found"
+
+```bash
+# Установите Flutter SDK
+# https://flutter.dev/docs/get-started/install
+
+# Добавьте Flutter в PATH
+export PATH="$PATH:/path/to/flutter/bin"
+```
+
+### Ошибка: "Android SDK not found"
+
+```bash
+# Установите Android SDK через Android Studio или:
+flutter doctor --android-licenses
+```
+
+### Ошибка: "Build failed on Windows"
+
+```bash
+# Очистите build директорию
 flutter clean
 
-# Статический анализ кода
+# Обновите зависимости
+flutter pub get
+
+# Пересоберите
+flutter build windows
+```
+
+### Ошибка: "LNK1168: cannot open file"
+
+```powershell
+# Убейте все процессы приложения
+taskkill /F /IM new_fly_mixxxx.exe
+
+# Очистите build
+flutter clean
+```
+
+## Форматирование кода
+
+### Автоматическое форматирование
+
+```bash
+flutter format lib/ test/
+```
+
+### Анализ кода
+
+```bash
 flutter analyze
 ```
 
-## Если что-то не получается
+### Используемые правила
 
-1. Создайте issue с выводом `flutter doctor -v`
-2. Приложите скриншот ошибки из консоли
-3. Укажите что вы пробовали исправить
-4. Посмотрите `docs/developer/TROUBLESHOOTING.md`
+Правила определены в `analysis_options.yaml`
+
+## Git Workflow
+
+### Создание веток
+
+```bash
+# Feature branch
+git checkout -b feature/feature-name
+
+# Bugfix branch
+git checkout -b bugfix/bug-name
+```
+
+### Коммиты
+
+```bash
+# Следуйте conventional commits
+git commit -m "feat: add new feature"
+git commit -m "fix: resolve issue"
+git commit -m "test: add tests"
+```
+
+### Push changes
+
+```bash
+git push origin feature/feature-name
+```
+
+## Documentation
+
+Документация находится в:
+
+- **Developer Guide**: `docs/developer/`
+- **User Guide**: `docs/user/`
+- **API Documentation**: встроенная в код
+
+## Профилирование производительности
+
+### Flutter DevTools
+
+```bash
+flutter pub global activate devtools
+devtools
+```
+
+Затем откройте `http://localhost:9100` в браузере.
+
+### Профилирование памяти
+
+```bash
+flutter run --profile
+# Откройте DevTools -> Memory tab
+```
+
+### Профилирование производительности
+
+```bash
+flutter run --profile
+# Откройте DevTools -> Performance tab
+```
+
+## Release Process
+
+### Android
+
+```bash
+# Подготовка к релизу
+flutter build appbundle --release
+
+# Загрузка на Google Play Store
+# Используйте Play Console: https://play.google.com/console
+```
+
+### Windows
+
+```bash
+# Build для распространения
+flutter build windows --release
+
+# Файлы будут в: build/windows/x64/runner/Release/
+```
+
+### iOS
+
+```bash
+# Подготовка к релизу
+flutter build ios --release
+
+# Загрузка на App Store
+# Используйте Xcode или Application Loader
+```
+
+## Дополнительные команды
+
+```bash
+# Показать информацию о Flutter установке
+flutter doctor -v
+
+# Очистить все кэши
+flutter clean
+
+# Обновить Flutter SDK
+flutter upgrade
+
+# Получить информацию о зависимостях
+flutter pub outdated
+
+# Обновить зависимости
+flutter pub upgrade
+
+# Получить конкретную версию пакета
+flutter pub get --no-precompile
+```
+
