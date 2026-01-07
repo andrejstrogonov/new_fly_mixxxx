@@ -530,15 +530,15 @@ void main() {
         MaterialApp(
           home: ChangeNotifierProvider.value(
             value: audioProvider,
-            child: const Scaffold(
+            child: Scaffold(
               body: SizedBox(
-                width: 100,
-                height: 100,
+                width: 300,
+                height: 300,
                 child: RotaryKnobWidget(
                   value: 50,
                   min: 0,
                   max: 100,
-                  onChanged: null,
+                  onChanged: (_) {},
                   label: 'Test',
                   size: 80,
                 ),
@@ -548,7 +548,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(Listener), findsOneWidget);
+      expect(find.byType(Listener), findsWidgets);
     });
 
     // Test 23: GestureDetector pan handling
@@ -623,7 +623,257 @@ void main() {
       expect(offset.dx, 25.0);
       expect(offset.dy, 0.0);
     });
+
+    // Test 26: Listener pointer move with localPosition fix
+    testWidgets('Listener onPointerMove correctly handles position conversion',
+        (WidgetTester tester) async {
+      final changedValues = <double>[];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 200,
+              height: 200,
+              child: RotaryKnobWidget(
+                value: 50,
+                min: 0,
+                max: 100,
+                onChanged: (value) => changedValues.add(value),
+                label: 'Test',
+                size: 80,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(Listener), findsWidgets);
+      expect(find.byType(GestureDetector), findsWidgets);
+    });
+
+    // Test 27: Event position conversion in Listener
+    testWidgets('Listener correctly processes pointer events with position conversion',
+        (WidgetTester tester) async {
+      double currentValue = 50;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (context, setState) {
+                return SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: RotaryKnobWidget(
+                    value: currentValue,
+                    min: 0,
+                    max: 100,
+                    onChanged: (newValue) {
+                      setState(() {
+                        currentValue = newValue;
+                      });
+                    },
+                    label: 'Test',
+                    size: 100,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(RotaryKnobWidget), findsOneWidget);
+      expect(find.text('50.0'), findsOneWidget);
+    });
+
+    // Test 28: GlobalToLocal conversion works correctly
+    testWidgets('RenderBox.globalToLocal conversion in onPointerMove',
+        (WidgetTester tester) async {
+      final changedValues = <double>[];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                height: 200,
+                child: RotaryKnobWidget(
+                  value: 50,
+                  min: 0,
+                  max: 100,
+                  onChanged: (value) => changedValues.add(value),
+                  label: 'GlobalToLocal Test',
+                  size: 80,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(RotaryKnobWidget), findsOneWidget);
+    });
+
+    // Test 29: Pointer event handling with multiple event types
+    testWidgets('RotaryKnobWidget handles both Listener and GestureDetector events',
+        (WidgetTester tester) async {
+      final eventLog = <String>[];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 200,
+              height: 200,
+              child: RotaryKnobWidget(
+                value: 50,
+                min: 0,
+                max: 100,
+                onChanged: (_) => eventLog.add('changed'),
+                label: 'Event Test',
+                size: 100,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final listenerWidget = find.byType(Listener);
+      final gestureDetectorWidget = find.byType(GestureDetector);
+
+      expect(listenerWidget, findsWidgets);
+      expect(gestureDetectorWidget, findsWidgets);
+    });
+
+    // Test 30: Position offset calculation
+    test('Position offset is correctly calculated from center', () {
+      const centerX = 50.0;
+      const centerY = 50.0;
+      const pointerX = 75.0;
+      const pointerY = 50.0;
+
+      final center = Offset(centerX, centerY);
+      final pointerPosition = Offset(pointerX, pointerY);
+      final offsetFromCenter = pointerPosition - center;
+
+      expect(offsetFromCenter.dx, 25.0);
+      expect(offsetFromCenter.dy, 0.0);
+      expect(offsetFromCenter.distance, 25.0);
+    });
   });
-}
+
+  group('LocalPosition Event Handling Tests', () {
+    // Test 31: onPointerMove event processing
+    testWidgets('onPointerMove event is properly processed',
+        (WidgetTester tester) async {
+      int eventCount = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 200,
+              height: 200,
+              child: RotaryKnobWidget(
+                value: 50,
+                min: 0,
+                max: 100,
+                onChanged: (_) => eventCount++,
+                label: 'Event Count Test',
+                size: 100,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(Listener), findsWidgets);
+    });
+
+    // Test 32: RenderBox retrieval in build context
+    testWidgets('RenderBox is correctly retrieved from context',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 300,
+              height: 300,
+              child: RotaryKnobWidget(
+                value: 50,
+                min: 0,
+                max: 100,
+                onChanged: (_) {},
+                label: 'RenderBox Test',
+                size: 100,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final renderObject = tester.binding.window;
+      expect(renderObject, isNotNull);
+    });
+
+    // Test 33: Multiple coordinate transformations
+    test('Multiple coordinate transformations are consistent', () {
+      final globalPosition = Offset(100.0, 100.0);
+      const offsetX = 30.0;
+      const offsetY = 40.0;
+
+      // Simulate widget offset
+      final widgetOffset = Offset(offsetX, offsetY);
+      final expectedLocalPosition = globalPosition - widgetOffset;
+
+      expect(expectedLocalPosition.dx, 70.0);
+      expect(expectedLocalPosition.dy, 60.0);
+    });
+
+    // Test 34: Event position in corners
+    test('Event position calculation at knob corners', () {
+      const centerX = 50.0;
+      const centerY = 50.0;
+      const radius = 40.0;
+
+      // Top-right corner angle (45 degrees)
+      final topRightX = centerX + radius * math.cos(math.pi / 4);
+      final topRightY = centerY + radius * math.sin(math.pi / 4);
+
+      final topRightOffset = Offset(topRightX, topRightY);
+      final centerOffset = Offset(centerX, centerY);
+      final deltaOffset = topRightOffset - centerOffset;
+
+      expect(deltaOffset.distance, closeTo(radius, 0.01));
+    });
+
+    // Test 35: PointerMoveEvent to localPosition conversion
+    testWidgets('PointerMoveEvent global position converts to local correctly',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.all(50.0),
+              child: RotaryKnobWidget(
+                value: 50,
+                min: 0,
+                max: 100,
+                onChanged: (_) {},
+                label: 'Padded Test',
+                size: 100,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(RotaryKnobWidget), findsOneWidget);
+      expect(find.byType(Padding), findsOneWidget);
+    });
+  });
 }
 

@@ -91,7 +91,13 @@ class _RotaryKnobWidgetState extends State<RotaryKnobWidget> {
           width: widget.size,
           height: widget.size,
           child: Listener(
-            onPointerMove: (event) => _onPointerMove(event.localPosition),
+            onPointerMove: (event) {
+              final renderBox = context.findRenderObject() as RenderBox?;
+              if (renderBox != null) {
+                final localPosition = renderBox.globalToLocal(event.position);
+                _onPointerMove(localPosition);
+              }
+            },
             onPointerDown: (_) => {},
             child: GestureDetector(
               onPanUpdate: (details) {
