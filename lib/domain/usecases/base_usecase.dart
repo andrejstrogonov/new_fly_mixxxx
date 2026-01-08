@@ -11,15 +11,17 @@ class NoParams extends UseCaseParams {
 }
 
 /// Базовый класс для всех UseCase
-abstract class UseCase<Type, Params> {
+abstract class UseCase<Type, Params extends UseCaseParams> {
   /// Выполняет бизнес-логику UseCase
   /// Возвращает Result<Type> для правильной обработки ошибок
   Future<Result<Type>> call(Params params);
 }
 
 /// UseCase без параметров
-abstract class UseCaseNoParams<Type> extends UseCase<Type, NoParams> {
-  @override
-  Future<Result<Type>> call(NoParams params);
-}
+abstract class UseCaseNoParams<Type> implements UseCase<Type, NoParams> {
+  /// Реализация для usecase без параметров
+  Future<Result<Type>> call();
 
+  @override
+  Future<Result<Type>> call(NoParams params) => call();
+}

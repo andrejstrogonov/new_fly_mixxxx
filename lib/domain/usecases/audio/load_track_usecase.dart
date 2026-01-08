@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/result.dart';
-import '../../domain/repositories/audio_repository.dart';
-import '../../domain/entities/track_entity.dart';
-import 'base_usecase.dart';
+import 'package:new_fly_mixxxx/domain/entities/result.dart';
+import 'package:new_fly_mixxxx/domain/repositories/audio_repository.dart';
+import 'package:new_fly_mixxxx/domain/entities/track_entity.dart';
+import 'package:new_fly_mixxxx/domain/usecases/base_usecase.dart';
 
 class LoadTrackParams extends UseCaseParams {
   final TrackEntity track;
@@ -40,4 +40,3 @@ class LoadTrackUseCase extends UseCase<void, LoadTrackParams> {
     );
   }
 }
-

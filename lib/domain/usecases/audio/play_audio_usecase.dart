@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/result.dart';
-import '../../domain/repositories/audio_repository.dart';
-import 'base_usecase.dart';
+import 'package:new_fly_mixxxx/domain/entities/result.dart';
+import 'package:new_fly_mixxxx/domain/repositories/audio_repository.dart';
+import 'package:new_fly_mixxxx/domain/usecases/base_usecase.dart';
 
 class PlayAudioParams extends UseCaseParams {
   final int playerNumber; // 1 или 2
@@ -31,4 +31,3 @@ class PlayAudioUseCase extends UseCase<void, PlayAudioParams> {
     return await audioRepository.play(playerNumber: params.playerNumber);
   }
 }
-

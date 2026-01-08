@@ -4,6 +4,20 @@ import 'package:equatable/equatable.dart';
 abstract class Result<T> extends Equatable {
   const Result();
 
+   /// Фабричный конструктор для успешного результата
+  factory Result.success(T data) => Success<T>(data);
+
+  /// Фабричный конструктор для ошибки
+  factory Result.failure({required String message, String? code, dynamic originalException}) => Failure(
+        message: message,
+        code: code,
+        originalException: originalException,
+      );
+
+  /// Удобные геттеры
+  bool get isSuccess => this is Success<T>;
+  bool get isFailure => this is Failure;
+
   /// Выполняет функцию в зависимости от типа результата
   R fold<R>(R Function(Failure) onFailure, R Function(T) onSuccess);
 }
@@ -46,4 +60,3 @@ class Failure extends Result<Never> {
   @override
   String toString() => 'Failure(message: $message, code: $code)';
 }
-
