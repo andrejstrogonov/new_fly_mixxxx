@@ -63,10 +63,7 @@ class EqualizerWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: List.generate(
                       10,
-                      (index) => _buildEqKnob(
-                        index,
-                        audioProvider,
-                      ),
+                      (index) => _buildEqKnob(index, audioProvider),
                     ),
                   ),
                 ),
@@ -78,10 +75,7 @@ class EqualizerWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildEqKnob(
-    int index,
-    AudioProvider audioProvider,
-  ) {
+  Widget _buildEqKnob(int index, AudioProvider audioProvider) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: RotaryKnobWidget(

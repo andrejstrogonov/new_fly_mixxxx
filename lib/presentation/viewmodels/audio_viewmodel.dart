@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../viewmodels/base_viewmodel.dart';
 import '../../domain/entities/track_entity.dart';
 import '../../domain/repositories/audio_repository.dart';
@@ -7,7 +6,6 @@ import '../../domain/usecases/audio/play_audio_usecase.dart';
 import '../../domain/usecases/audio/pause_audio_usecase.dart';
 import '../../domain/usecases/audio/stop_audio_usecase.dart';
 import '../../domain/usecases/audio/seek_audio_usecase.dart';
-import '../../core/utils/logger.dart';
 
 /// ViewModel для управления аудиоплеером
 class AudioViewModel extends BaseViewModel {

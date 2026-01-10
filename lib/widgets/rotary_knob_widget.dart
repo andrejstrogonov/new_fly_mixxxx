@@ -33,35 +33,15 @@ class RotaryKnobWidget extends StatefulWidget {
 }
 
 class _RotaryKnobWidgetState extends State<RotaryKnobWidget> {
-  late Offset _knobPosition;
-  late Offset _startPosition;
-  late double _startValue;
 
   @override
   void initState() {
     super.initState();
-    _updateKnobPosition();
   }
 
   @override
   void didUpdateWidget(RotaryKnobWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.value != widget.value) {
-      _updateKnobPosition();
-    }
-  }
-
-  void _updateKnobPosition() {
-    // Вычисляем угол на основе значения (от -135° до +135°)
-    final normalizedValue = (widget.value - widget.min) / (widget.max - widget.min);
-    final angle = -135 + (normalizedValue * 270); // 270 градусов диапазон
-    final radians = angle * math.pi / 180;
-
-    final radius = (widget.size - 20) / 2;
-    _knobPosition = Offset(
-      math.cos(radians) * radius,
-      math.sin(radians) * radius,
-    );
   }
 
   void _onPointerMove(Offset localPosition) {
@@ -118,6 +98,7 @@ class _RotaryKnobWidgetState extends State<RotaryKnobWidget> {
               ),
             ),
           ),
+        ),
         const SizedBox(height: 8),
         // Метка
         Text(

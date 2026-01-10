@@ -76,19 +76,12 @@ abstract class BaseViewModel extends ChangeNotifier {
     );
   }
 
-  /// Логирует сообщение
   void log(String message) {
     Logger.info(message, tag: runtimeType.toString());
   }
 
-  /// Логирует ошибку
   void logError(String message, {dynamic error}) {
     Logger.error(message, tag: runtimeType.toString(), error: error);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 

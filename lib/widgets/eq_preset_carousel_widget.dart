@@ -18,8 +18,7 @@ class _EQPresetCarouselWidgetState extends State<EQPresetCarouselWidget> {
   @override
   void initState() {
     super.initState();
-    final audioProvider =
-        Provider.of<AudioProvider>(context, listen: false);
+    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
     _presetNames = audioProvider.getAvailablePresets();
     _currentIndex = _presetNames.indexOf(audioProvider.currentPreset);
     if (_currentIndex < 0) _currentIndex = 0;
@@ -48,7 +47,6 @@ class _EQPresetCarouselWidgetState extends State<EQPresetCarouselWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header with current preset info
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -60,7 +58,6 @@ class _EQPresetCarouselWidgetState extends State<EQPresetCarouselWidget> {
                       color: Colors.white,
                     ),
                   ),
-                  // Current preset display
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -86,7 +83,6 @@ class _EQPresetCarouselWidgetState extends State<EQPresetCarouselWidget> {
                 ],
               ),
               const SizedBox(height: 16),
-              // Carousel
               SizedBox(
                 height: 140,
                 child: PageView.builder(
@@ -95,7 +91,6 @@ class _EQPresetCarouselWidgetState extends State<EQPresetCarouselWidget> {
                     setState(() {
                       _currentIndex = index;
                     });
-                    // Apply preset when page changes
                     audioProvider.applyPreset(_presetNames[index]);
                   },
                   itemCount: _presetNames.length,
@@ -138,7 +133,6 @@ class _EQPresetCarouselWidgetState extends State<EQPresetCarouselWidget> {
                 ),
               ),
               const SizedBox(height: 12),
-              // Dots indicator
               Center(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -228,7 +222,6 @@ class _EQPresetCarouselWidgetState extends State<EQPresetCarouselWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Genre name
               Text(
                 name,
                 style: TextStyle(
@@ -239,7 +232,6 @@ class _EQPresetCarouselWidgetState extends State<EQPresetCarouselWidget> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 6),
-              // Description
               Flexible(
                 child: Text(
                   description,

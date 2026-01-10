@@ -28,12 +28,10 @@ class MixerControlsWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Main Controls Row (Crossfader, Master Volume, BPM, Tempo)
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    // Crossfader
                     Column(
                       children: [
                         SizedBox(
@@ -58,19 +56,9 @@ class MixerControlsWidget extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                        Text(
-                          audioProvider.crossfaderPosition < 0.5
-                              ? 'D1 (${((1 - audioProvider.crossfaderPosition) * 100).toStringAsFixed(0)}%)'
-                              : 'D2 (${(audioProvider.crossfaderPosition * 100).toStringAsFixed(0)}%)',
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(width: 16),
-                    // Master Volume Knob
                     RotaryKnobWidget(
                       value: audioProvider.masterVolume * 100,
                       min: 0,
@@ -85,7 +73,6 @@ class MixerControlsWidget extends StatelessWidget {
                       inactiveColor: Colors.grey,
                     ),
                     const SizedBox(width: 16),
-                    // BPM Knob
                     RotaryKnobWidget(
                       value: audioProvider.bpm,
                       min: 60,
@@ -100,7 +87,6 @@ class MixerControlsWidget extends StatelessWidget {
                       inactiveColor: Colors.grey,
                     ),
                     const SizedBox(width: 16),
-                    // Tempo Knob
                     RotaryKnobWidget(
                       value: audioProvider.tempoMultiplier * 100,
                       min: 50,
@@ -118,7 +104,6 @@ class MixerControlsWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              // Deck Volume Controls (Horizontal knobs)
               const Text(
                 'Deck Volumes',
                 style: TextStyle(

@@ -1,636 +1,366 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'dart:math';
 import '../providers/audio_provider.dart';
+import 'dart:math' as math;
 
-class FrequencyResponseWidget extends StatelessWidget {
+class FrequencyResponseWidget extends StatefulWidget {
   const FrequencyResponseWidget({super.key});
+
+  @override
+  State<FrequencyResponseWidget> createState() => _FrequencyResponseWidgetState();
+}
+
+class _FrequencyResponseWidgetState extends State<FrequencyResponseWidget> {
+  int _selectedTab = 0;
+  final List<String> _tabs = ['АЧХ', 'ФЧХ', 'ЛАЧХ', 'ЛФЧХ'];
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AudioProvider>(
       builder: (context, audioProvider, _) {
-        // Generate frequency points for visualization (logarithmic scale)
-        List<int> frequencies = _generateFrequencies();
-        List<double> magnitudes = audioProvider.calculateFrequencyResponse(frequencies);
-        List<double> phases = audioProvider.calculatePhaseResponse(frequencies);
-
-        return DefaultTabController(
-          length: 3,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF2a2a2a),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.3)),
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF2a2a2a),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.deepPurple.withOpacity(0.3)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Frequency Response (АЧХ & ФЧХ & Диаграмма Боде)',
+                    'Frequency Response Analysis',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  TabBar(
-                    labelColor: Colors.deepPurple,
-                    unselectedLabelColor: Colors.grey,
-                    indicatorColor: Colors.deepPurple,
-                    tabs: const [
-                      Tab(text: 'АЧХ (Амплитуда)'),
-                      Tab(text: 'ФЧХ (Фаза)'),
-                      Tab(text: 'Диаграмма Боде'),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    height: 400,
-                    child: TabBarView(
-                      children: [
-                        // АЧХ
-                        _buildAchxChart(frequencies, magnitudes),
-                        // ФЧХ
-                        _buildPhchxChart(frequencies, phases),
-                        // Диаграмма Боде
-                        _buildBodeChart(frequencies, magnitudes, phases),
-                      ],
-                    ),
+                  DropdownButton<int>(
+                    value: _selectedTab,
+                    dropdownColor: const Color(0xFF2a2a2a),
+                    style: const TextStyle(color: Colors.white),
+                    items: _tabs.asMap().entries.map((entry) {
+                      return DropdownMenuItem<int>(
+                        value: entry.key,
+                        child: Text(entry.value),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedTab = value ?? 0;
+                      });
+                    },
                   ),
                 ],
               ),
-            ),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 250,
+                child: _buildChart(audioProvider),
+              ),
+              const SizedBox(height: 16),
+              _buildLegend(),
+            ],
           ),
         );
       },
     );
   }
 
-  List<int> _generateFrequencies() {
-    // Generate logarithmically spaced frequencies from 20Hz to 20kHz
-    List<int> frequencies = [];
-    // Using native log10 calculation: log10(x) = log(x) / log(10)
-    double logMin = log(20.0) / log(10.0);  // log10(20)
-    double logMax = log(20000.0) / log(10.0);  // log10(20000)
-    int points = 50;
-
-    for (int i = 0; i < points; i++) {
-      double logFreq = logMin + (logMax - logMin) * (i / (points - 1));
-      // pow(10, x) calculation: 10^x = e^(x * ln(10))
-      double freq = exp(logFreq * log(10.0));
-      frequencies.add(freq.toInt());
+  Widget _buildChart(AudioProvider audioProvider) {
+    final frequencies = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
+    
+    switch (_selectedTab) {
+      case 0: // АЧХ (Amplitude-Frequency Response)
+        return _buildAmplitudeChart(audioProvider, frequencies);
+      case 1: // ФЧХ (Phase-Frequency Response)
+        return _buildPhaseChart(audioProvider, frequencies);
+      case 2: // ЛАЧХ (Logarithmic Amplitude-Frequency Response)
+        return _buildLogAmplitudeChart(audioProvider, frequencies);
+      case 3: // ЛФЧХ (Logarithmic Phase-Frequency Response)
+        return _buildLogPhaseChart(audioProvider, frequencies);
+      default:
+        return _buildAmplitudeChart(audioProvider, frequencies);
     }
-
-    return frequencies;
   }
 
-  /// Вычисляет decibels из линейного значения
-  double _linearToDb(double value) {
-    if (value <= 0) return -120.0; // минимум -120дБ
-    return 20 * log(value) / log(10);
-  }
+  Widget _buildAmplitudeChart(AudioProvider audioProvider, List<int> frequencies) {
+    final magnitudes = audioProvider.calculateFrequencyResponse(frequencies);
+    final spots = frequencies.asMap().entries.map((entry) {
+      return FlSpot(entry.key.toDouble(), magnitudes[entry.key]);
+    }).toList();
 
-  /// Вычисляет линейное значение из decibels
-  double _dbToLinear(double dbValue) {
-    return pow(10, dbValue / 20).toDouble();
-  }
-
-  Widget _buildAchxChart(List<int> frequencies, List<double> magnitudes) {
-    // Normalize frequencies to 0-100 scale for chart
-    List<FlSpot> spots = [];
-    for (int i = 0; i < frequencies.length; i++) {
-      double x = i.toDouble();
-      double y = magnitudes[i].clamp(-12.0, 12.0);
-      spots.add(FlSpot(x, y));
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1a1a1a),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Amplitude Frequency Response (АЧХ)',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: true,
+          getDrawingHorizontalLine: (value) => FlLine(
+            color: Colors.grey.withOpacity(0.3),
+            strokeWidth: 1,
+          ),
+          getDrawingVerticalLine: (value) => FlLine(
+            color: Colors.grey.withOpacity(0.3),
+            strokeWidth: 1,
+          ),
+        ),
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                if (value.toInt() < frequencies.length) {
+                  return Text(
+                    '${frequencies[value.toInt()]}Hz',
+                    style: const TextStyle(color: Colors.grey, fontSize: 10),
+                  );
+                }
+                return const Text('');
+              },
             ),
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 200,
-            child: LineChart(
-              LineChartData(
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: true,
-                  horizontalInterval: 4,
-                  verticalInterval: 10,
-                  getDrawingHorizontalLine: (value) {
-                    return FlLine(
-                      color: Colors.grey.withValues(alpha: 0.2),
-                      strokeWidth: 1,
-                    );
-                  },
-                  getDrawingVerticalLine: (value) {
-                    return FlLine(
-                      color: Colors.grey.withValues(alpha: 0.2),
-                      strokeWidth: 1,
-                    );
-                  },
-                ),
-                titlesData: FlTitlesData(
-                  show: true,
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      getTitlesWidget: (value, meta) {
-                        const labels = ['20Hz', '100Hz', '1kHz', '10kHz', '20kHz'];
-                        int index = value ~/ 10;
-                        if (index >= 0 && index < labels.length) {
-                          return Text(
-                            labels[index],
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 10,
-                            ),
-                          );
-                        }
-                        return const Text('');
-                      },
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          '${value.toInt()}dB',
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 10,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                borderData: FlBorderData(
-                  show: true,
-                  border: Border.all(
-                    color: Colors.deepPurple.withValues(alpha: 0.3),
-                  ),
-                ),
-                minX: 0,
-                maxX: (spots.length - 1).toDouble(),
-                minY: -12,
-                maxY: 12,
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: spots,
-                    isCurved: true,
-                    color: Colors.deepPurple,
-                    barWidth: 2,
-                    isStrokeCapRound: true,
-                    dotData: const FlDotData(show: false),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      color: Colors.deepPurple.withValues(alpha: 0.2),
-                    ),
-                  ),
-                ],
-              ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                return Text(
+                  '${value.toStringAsFixed(1)}dB',
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
+                );
+              },
+            ),
+          ),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(
+          show: true,
+          border: Border.all(color: Colors.grey.withOpacity(0.5)),
+        ),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: Colors.deepPurple,
+            barWidth: 3,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, barData, index) {
+                return FlDotCirclePainter(
+                  radius: 4,
+                  color: Colors.deepPurple,
+                  strokeWidth: 2,
+                  strokeColor: Colors.white,
+                );
+              },
             ),
           ),
         ],
+        minY: -15,
+        maxY: 15,
       ),
     );
   }
 
-  Widget _buildPhchxChart(List<int> frequencies, List<double> phases) {
-    // Normalize phases to chart scale
-    List<FlSpot> spots = [];
-    for (int i = 0; i < frequencies.length; i++) {
-      double x = i.toDouble();
-      double y = phases[i].clamp(-180.0, 180.0);
-      spots.add(FlSpot(x, y));
-    }
+  Widget _buildPhaseChart(AudioProvider audioProvider, List<int> frequencies) {
+    final phases = audioProvider.calculatePhaseResponse(frequencies);
+    final spots = frequencies.asMap().entries.map((entry) {
+      return FlSpot(entry.key.toDouble(), phases[entry.key]);
+    }).toList();
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1a1a1a),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Phase Frequency Response (ФЧХ)',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Colors.cyan,
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(show: true),
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                if (value.toInt() < frequencies.length) {
+                  return Text(
+                    '${frequencies[value.toInt()]}Hz',
+                    style: const TextStyle(color: Colors.grey, fontSize: 10),
+                  );
+                }
+                return const Text('');
+              },
             ),
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 200,
-            child: LineChart(
-              LineChartData(
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: true,
-                  horizontalInterval: 60,
-                  verticalInterval: 10,
-                  getDrawingHorizontalLine: (value) {
-                    return FlLine(
-                      color: Colors.grey.withValues(alpha: 0.2),
-                      strokeWidth: 1,
-                    );
-                  },
-                  getDrawingVerticalLine: (value) {
-                    return FlLine(
-                      color: Colors.grey.withValues(alpha: 0.2),
-                      strokeWidth: 1,
-                    );
-                  },
-                ),
-                titlesData: FlTitlesData(
-                  show: true,
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      getTitlesWidget: (value, meta) {
-                        const labels = ['20Hz', '100Hz', '1kHz', '10kHz', '20kHz'];
-                        int index = value ~/ 10;
-                        if (index >= 0 && index < labels.length) {
-                          return Text(
-                            labels[index],
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 10,
-                            ),
-                          );
-                        }
-                        return const Text('');
-                      },
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          '${value.toInt()}°',
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 10,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                borderData: FlBorderData(
-                  show: true,
-                  border: Border.all(
-                    color: Colors.cyan.withValues(alpha: 0.3),
-                  ),
-                ),
-                minX: 0,
-                maxX: (spots.length - 1).toDouble(),
-                minY: -180,
-                maxY: 180,
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: spots,
-                    isCurved: true,
-                    color: Colors.cyan,
-                    barWidth: 2,
-                    isStrokeCapRound: true,
-                    dotData: const FlDotData(show: false),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      color: Colors.cyan.withValues(alpha: 0.2),
-                    ),
-                  ),
-                ],
-              ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                return Text(
+                  '${value.toStringAsFixed(0)}°',
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
+                );
+              },
             ),
+          ),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(show: true),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: Colors.orange,
+            barWidth: 3,
+            dotData: const FlDotData(show: true),
           ),
         ],
+        minY: -180,
+        maxY: 180,
       ),
     );
   }
 
-  Widget _buildBodeChart(List<int> frequencies, List<double> magnitudes, List<double> phases) {
-    // Create Bode diagram data points
-    List<FlSpot> magnitudeSpots = [];
-    List<FlSpot> phaseSpots = [];
+  Widget _buildLogAmplitudeChart(AudioProvider audioProvider, List<int> frequencies) {
+    final magnitudes = audioProvider.calculateFrequencyResponse(frequencies);
+    final spots = frequencies.asMap().entries.map((entry) {
+      final logFreq = math.log(frequencies[entry.key]) / math.ln10;
+      return FlSpot(logFreq, magnitudes[entry.key]);
+    }).toList();
 
-    for (int i = 0; i < frequencies.length; i++) {
-      // log10(frequency) = log(frequency) / log(10)
-      double freqLog = log(frequencies[i].toDouble()) / log(10.0);
-      double magnitude = magnitudes[i].clamp(-12.0, 12.0);
-      double phase = phases[i].clamp(-180.0, 180.0);
-
-      magnitudeSpots.add(FlSpot(freqLog, magnitude));
-      phaseSpots.add(FlSpot(freqLog, phase));
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1a1a1a),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Диаграмма Боде (ЛФЧХ) - Логарифмическая частотная характеристика',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Colors.amber,
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(show: true),
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                final freq = math.pow(10, value).round();
+                return Text(
+                  '${freq}Hz',
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
+                );
+              },
             ),
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 380,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Амплитудная характеристика Боде
-                SizedBox(
-                  height: 185,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.deepPurple.withValues(alpha: 0.3),
-                      ),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: LineChart(
-                      LineChartData(
-                        gridData: FlGridData(
-                          show: true,
-                          drawVerticalLine: true,
-                          horizontalInterval: 4,
-                          verticalInterval: 0.5,
-                          getDrawingHorizontalLine: (value) {
-                            return FlLine(
-                              color: Colors.grey.withValues(alpha: 0.2),
-                              strokeWidth: 1,
-                            );
-                          },
-                          getDrawingVerticalLine: (value) {
-                            if (value == 1.3 || value == 2.0 || value == 3.0 || value == 4.3) {
-                              return FlLine(
-                                color: Colors.grey.withValues(alpha: 0.3),
-                                strokeWidth: 1,
-                              );
-                            }
-                            return FlLine(
-                              color: Colors.grey.withValues(alpha: 0.15),
-                              strokeWidth: 0.5,
-                            );
-                          },
-                        ),
-                        titlesData: FlTitlesData(
-                          show: true,
-                          rightTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          topTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 30,
-                              getTitlesWidget: (value, meta) {
-                                final logLabels = {
-                                  '1.3': '20Hz',
-                                  '2.0': '100Hz',
-                                  '3.0': '1kHz',
-                                  '4.0': '10kHz',
-                                  '4.3': '20kHz',
-                                };
-                                final key = value.toStringAsFixed(1);
-                                if (logLabels.containsKey(key)) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Text(
-                                      logLabels[key] ?? '',
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return const Text('');
-                              },
-                            ),
-                          ),
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 40,
-                              getTitlesWidget: (value, meta) {
-                                return Text(
-                                  '${value.toInt()}dB',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        borderData: FlBorderData(
-                          show: true,
-                          border: Border.all(
-                            color: Colors.deepPurple.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        minX: 1.0,
-                        maxX: 4.5,
-                        minY: -12,
-                        maxY: 12,
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: magnitudeSpots,
-                            isCurved: true,
-                            color: Colors.deepPurple,
-                            barWidth: 2,
-                            isStrokeCapRound: true,
-                            dotData: const FlDotData(show: false),
-                            belowBarData: BarAreaData(
-                              show: true,
-                              color: Colors.deepPurple.withValues(alpha: 0.2),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                // Фазовая характеристика Боде
-                SizedBox(
-                  height: 185,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.cyan.withValues(alpha: 0.3),
-                      ),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: LineChart(
-                      LineChartData(
-                        gridData: FlGridData(
-                          show: true,
-                          drawVerticalLine: true,
-                          horizontalInterval: 60,
-                          verticalInterval: 0.5,
-                          getDrawingHorizontalLine: (value) {
-                            return FlLine(
-                              color: Colors.grey.withValues(alpha: 0.2),
-                              strokeWidth: 1,
-                            );
-                          },
-                          getDrawingVerticalLine: (value) {
-                            if (value == 1.3 || value == 2.0 || value == 3.0 || value == 4.3) {
-                              return FlLine(
-                                color: Colors.grey.withValues(alpha: 0.3),
-                                strokeWidth: 1,
-                              );
-                            }
-                            return FlLine(
-                              color: Colors.grey.withValues(alpha: 0.15),
-                              strokeWidth: 0.5,
-                            );
-                          },
-                        ),
-                        titlesData: FlTitlesData(
-                          show: true,
-                          rightTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          topTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 30,
-                              getTitlesWidget: (value, meta) {
-                                final logLabels = {
-                                  '1.3': '20Hz',
-                                  '2.0': '100Hz',
-                                  '3.0': '1kHz',
-                                  '4.0': '10kHz',
-                                  '4.3': '20kHz',
-                                };
-                                final key = value.toStringAsFixed(1);
-                                if (logLabels.containsKey(key)) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Text(
-                                      logLabels[key] ?? '',
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return const Text('');
-                              },
-                            ),
-                          ),
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 40,
-                              getTitlesWidget: (value, meta) {
-                                return Text(
-                                  '${value.toInt()}°',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        borderData: FlBorderData(
-                          show: true,
-                          border: Border.all(
-                            color: Colors.cyan.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        minX: 1.0,
-                        maxX: 4.5,
-                        minY: -180,
-                        maxY: 180,
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: phaseSpots,
-                            isCurved: true,
-                            color: Colors.cyan,
-                            barWidth: 2,
-                            isStrokeCapRound: true,
-                            dotData: const FlDotData(show: false),
-                            belowBarData: BarAreaData(
-                              show: true,
-                              color: Colors.cyan.withValues(alpha: 0.2),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                return Text(
+                  '${value.toStringAsFixed(1)}dB',
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
+                );
+              },
             ),
+          ),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(show: true),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: Colors.green,
+            barWidth: 3,
+            dotData: const FlDotData(show: true),
           ),
         ],
+        minY: -15,
+        maxY: 15,
       ),
+    );
+  }
+
+  Widget _buildLogPhaseChart(AudioProvider audioProvider, List<int> frequencies) {
+    final phases = audioProvider.calculatePhaseResponse(frequencies);
+    final spots = frequencies.asMap().entries.map((entry) {
+      final logFreq = math.log(frequencies[entry.key]) / math.ln10;
+      return FlSpot(logFreq, phases[entry.key]);
+    }).toList();
+
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(show: true),
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                final freq = math.pow(10, value).round();
+                return Text(
+                  '${freq}Hz',
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
+                );
+              },
+            ),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                return Text(
+                  '${value.toStringAsFixed(0)}°',
+                  style: const TextStyle(color: Colors.grey, fontSize: 10),
+                );
+              },
+            ),
+          ),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(show: true),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: Colors.red,
+            barWidth: 3,
+            dotData: const FlDotData(show: true),
+          ),
+        ],
+        minY: -180,
+        maxY: 180,
+      ),
+    );
+  }
+
+  Widget _buildLegend() {
+    final legends = [
+      {'color': Colors.deepPurple, 'label': 'АЧХ - Amplitude Response'},
+      {'color': Colors.orange, 'label': 'ФЧХ - Phase Response'},
+      {'color': Colors.green, 'label': 'ЛАЧХ - Log Amplitude'},
+      {'color': Colors.red, 'label': 'ЛФЧХ - Log Phase'},
+    ];
+
+    return Wrap(
+      spacing: 16,
+      runSpacing: 8,
+      children: legends.map((legend) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: legend['color'] as Color,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              legend['label'] as String,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        );
+      }).toList(),
     );
   }
 }
-
